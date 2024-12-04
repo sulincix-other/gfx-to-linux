@@ -1,7 +1,8 @@
 project('gfx2linux', 'c')
 
 srcs = [
-    'server/main.c'
+    'server/main.c',
+    'server/parse.c'
 ]
 
 # create html2c

@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <pthread.h>
 
+#include "parse.h"
+
 #define PORT 8080
 #define BUFFER_SIZE 10240
+
+
 
 extern char* page;
 
@@ -16,8 +21,7 @@ void *handle_client(void *client_socket) {
 
     char buffer[BUFFER_SIZE];
     read(sock, buffer, sizeof(buffer) - 1);
-    printf("Received request:\n%s\n", buffer);
-
+    Event ev = parse_data(buffer);
     // Simple HTTP response
     char *http_response = strdup( 
         "HTTP/1.1 200 OK\n"
@@ -25,16 +29,19 @@ void *handle_client(void *client_socket) {
         "Connection: close\n"
         "\n");
 
-    http_response = realloc(http_response, 
-        (strlen(http_response) + strlen(page) + 1)*sizeof(char)
-    );
-    strcat(http_response, page);
+    if (ev.buttons < 0) {
+        http_response = realloc(http_response, 
+            (strlen(http_response) + strlen(page) + 1)*sizeof(char)
+        );
+        strcat(http_response, page);
+    }
 
     write(sock, http_response, strlen(http_response));
     close(sock);
     free(http_response);
     return NULL;
 }
+
 
 int main() {
     int server_fd, *new_socket;

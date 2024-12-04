@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Canvas Test</title>
@@ -12,13 +13,10 @@
         document.body.style.margin = 0;
         var ctx = canvas.getContext('2d');
         var pos = { x: 0, y: 0 };
-        var ready = false;
 
         canvas.oncontextmenu = function (e) {
             e.preventDefault();
         };
-
-        
 
         resize();
 
@@ -31,7 +29,7 @@
         // Touch event listeners
         document.addEventListener('touchstart', setPosition);
         document.addEventListener('touchmove', setPosition);
-        document.addEventListener('touchend', () => { ready = false; });
+        document.addEventListener('touchend', setPosition);
 
         // new position from mouse/touch event
         function setPosition(e) {
@@ -42,12 +40,17 @@
                 pos.x = e.clientX;
                 pos.y = e.clientY;
             }
+            var fbody = "X:\t" + pos.x + "\n" +
+               "Y:\t" + pos.y + "\n" +
+               "Buttons:\t" + e.buttons + "\n" +
+               "Height:\t" + window.innerHeight + "\n" +
+               "Width:\t" + window.innerWidth + "\n" +
+               "Status:\tOK\0";
             fetch(window.location.host+":"+window.location.port, {
                 method: "post",
                 headers: {},
-                body: `X:\t${pos.x}\nY:\t${pos.y}\nBut:\t${e.buttons}\nHeight:\t${window.innerHeight}\nWidth:\t${window.innerWidth}\nOK:\t1`.trim()
+                body: fbody,
             });
-            ready = true;
         }
 
         // resize canvas
