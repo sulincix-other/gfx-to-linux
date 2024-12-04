@@ -2,26 +2,35 @@
     <head>
         <title>Canvas Test</title>
     </head>
-    <body>
+    <body >
         <script>
         var canvas = document.createElement('canvas');
         document.body.appendChild(canvas);
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
 
         document.body.style.margin = 0;
         var ctx = canvas.getContext('2d');
         var pos = { x: 0, y: 0 };
         var ready = false;
 
+        canvas.oncontextmenu = function (e) {
+            e.preventDefault();
+        };
+
+        
+
         resize();
 
         window.addEventListener('resize', resize);
-        document.addEventListener('mousemove', draw);
+        document.addEventListener('mousemove', setPosition);
         document.addEventListener('mousedown', setPosition);
+        document.addEventListener('mouseup', setPosition);
         document.addEventListener('mouseenter', setPosition);
         
         // Touch event listeners
         document.addEventListener('touchstart', setPosition);
-        document.addEventListener('touchmove', draw);
+        document.addEventListener('touchmove', setPosition);
         document.addEventListener('touchend', () => { ready = false; });
 
         // new position from mouse/touch event
@@ -33,7 +42,11 @@
                 pos.x = e.clientX;
                 pos.y = e.clientY;
             }
-            fetch("http://192.168.0.13:8000/main.html?X=" + pos.x + "&Y=" + pos.y);
+            fetch(window.location.host+":"+window.location.port, {
+                method: "post",
+                headers: {},
+                body: `X:\t${pos.x}\nY:\t${pos.y}\nBut:\t${e.buttons}\nHeight:\t${window.innerHeight}\nWidth:\t${window.innerWidth}\nOK:\t1`.trim()
+            });
             ready = true;
         }
 
@@ -43,58 +56,6 @@
             ctx.canvas.height = window.innerHeight;
         }
 
-        function draw(e) {
-            e.preventDefault(); // Prevent scrolling when touching the canvas
-            if (e.touches) {
-                fetch("http://192.168.0.13:8000/main.html?X=" + e.touches[0].clientX + "&Y=" + e.touches[0].clientY);
-                if (!ready) {
-                    return;
-                }
-                console.log(
-                    "X:" + e.touches[0].clientX + " " +
-                    "Y:" + e.touches[0].clientY + " " +
-                    e.touches.length + " " +
-                    window.innerWidth + " " +
-                    window.innerHeight
-                );
-
-                ctx.beginPath(); // begin
-
-                ctx.lineWidth = 5;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#c0392b';
-
-                ctx.moveTo(pos.x, pos.y); // from
-                setPosition(e);
-                ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY); // to
-
-                ctx.stroke(); // draw it!
-            } else {
-                fetch("http://192.168.0.13:8000/main.html?but=" + e.buttons);
-                if (!ready) {
-                    return;
-                }
-                console.log(
-                    "X:" + e.clientX + " " +
-                    "Y:" + e.clientY + " " +
-                    e.buttons + " " +
-                    window.innerWidth + " " +
-                    window.innerHeight
-                );
-
-                ctx.beginPath(); // begin
-
-                ctx.lineWidth = 5;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#c0392b';
-
-                ctx.moveTo(pos.x, pos.y); // from
-                setPosition(e);
-                ctx.lineTo(e.clientX, e.clientY); // to
-
-                ctx.stroke(); // draw it!
-            }
-        }
         </script>
     </body>
 </html>
