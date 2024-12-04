@@ -6,15 +6,14 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 
-#include "parse.h"
+#define startswith(A, B) strncmp(A, B, strlen(B)) == 0
 
 #define PORT 8080
 #define BUFFER_SIZE 10240
 
-
+#include "gfx2linux.h"
 
 extern char* page;
-
 void *handle_client(void *client_socket) {
     int sock = *(int *)client_socket;
     free(client_socket);
@@ -34,6 +33,8 @@ void *handle_client(void *client_socket) {
             (strlen(http_response) + strlen(page) + 1)*sizeof(char)
         );
         strcat(http_response, page);
+    } else {
+        uinput_event(ev);
     }
 
     write(sock, http_response, strlen(http_response));
@@ -43,7 +44,7 @@ void *handle_client(void *client_socket) {
 }
 
 
-int main() {
+int service_main() {
     int server_fd, *new_socket;
     struct sockaddr_in address;
     int opt = 1;

@@ -41,11 +41,9 @@
                 pos.x = e.clientX;
                 pos.y = e.clientY;
             }
-            var fbody = "X:\t" + pos.x + "\n" +
-               "Y:\t" + pos.y + "\n" +
+            var fbody = "X:\t" + (pos.x * 1920) / ctx.canvas.width  + "\n" +
+               "Y:\t" + (pos.y * 1080) / ctx.canvas.height + "\n" +
                "Buttons:\t" + e.buttons + "\n" +
-               "Height:\t" + window.innerHeight + "\n" +
-               "Width:\t" + window.innerWidth + "\n" +
                "Status:\tOK\0";
             fetch(window.location.host+":"+window.location.port, {
                 method: "post",

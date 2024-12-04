@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "parse.h"
+#include "gfx2linux.h"
 
-#define startswith(A, B) strncmp(A, B, strlen(B)) == 0
 
 Event parse_data(char* data){
     //printf("Received request:\n%s\n", data);
@@ -22,10 +21,6 @@ Event parse_data(char* data){
         if(e){
             if(startswith(token, "Buttons:")){
                 ev->buttons = atoi(token+9);
-            }if(startswith(token, "Height:")){
-                ev->height = atoi(token+8);
-            }if(startswith(token, "Width:")){
-                ev->width = atoi(token+7);
             }if(startswith(token, "X:")){
                 ev->x = atoi(token+2);
             }if(startswith(token, "Y:")){
@@ -34,12 +29,5 @@ Event parse_data(char* data){
         }
         token = strtok(NULL, "\n");
     }
-    printf("Buttons:%d\nHeight:%d\nWidth%d\nX:%d\nY:%d\n\n",
-        ev->buttons,
-        ev->height,
-        ev->width,
-        ev->x,
-        ev->y
-    );
     return ev[0];
 }
