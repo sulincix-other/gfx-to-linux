@@ -8,7 +8,7 @@
         var canvas = document.createElement('canvas');
         document.body.appendChild(canvas);
         document.addEventListener('contextmenu', event => event.preventDefault());
-        
+        const socket = new WebSocket('ws://'+window.location.hostname+":8080");
 
         document.body.style.margin = 0;
         var ctx = canvas.getContext('2d');
@@ -45,11 +45,11 @@
                "Y:\t" + (pos.y * 1080) / ctx.canvas.height + "\n" +
                "Buttons:\t" + e.buttons + "\n" +
                "Status:\tOK\0";
-            fetch(window.location.host+":"+window.location.port, {
-                method: "post",
-                headers: {},
-                body: fbody,
-            });
+           send(fbody);
+        }
+
+        function send(data) {
+            socket.send(data);
         }
 
         // resize canvas

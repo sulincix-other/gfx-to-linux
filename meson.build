@@ -2,9 +2,14 @@ project('gfx2linux', 'c')
 
 srcs = [
     'src/webservice.c',
+    'src/websocket.c',
     'src/uinput.c',
     'src/parse.c',
     'src/main.c'
+]
+
+deps = [
+    dependency('libwebsockets')
 ]
 
 # create html2c
@@ -20,4 +25,4 @@ h = custom_target('html2c',
 srcs += [h]
 
 # Create an executable
-executable('main', srcs)
+executable('main', srcs, dependencies: deps)

@@ -104,10 +104,8 @@ void send_event(int type, int code, int value) {
 
 static int press = 0;
 void uinput_event(Event ev){
-    printf("Buttons:%d\nHeight:%d\nWidth%d\nX:%d\nY:%d\n\n",
+    printf("Buttons:%d\nX:%d\nY:%d\n\n",
         ev.buttons,
-        ev.height,
-        ev.width,
         ev.x,
         ev.y
     );

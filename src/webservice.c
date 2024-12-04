@@ -8,7 +8,7 @@
 
 #define startswith(A, B) strncmp(A, B, strlen(B)) == 0
 
-#define PORT 8080
+#define PORT 8081
 #define BUFFER_SIZE 10240
 
 #include "gfx2linux.h"
@@ -20,7 +20,6 @@ void *handle_client(void *client_socket) {
 
     char buffer[BUFFER_SIZE];
     read(sock, buffer, sizeof(buffer) - 1);
-    Event ev = parse_data(buffer);
     // Simple HTTP response
     char *http_response = strdup( 
         "HTTP/1.1 200 OK\n"
@@ -28,14 +27,10 @@ void *handle_client(void *client_socket) {
         "Connection: close\n"
         "\n");
 
-    if (ev.buttons < 0) {
-        http_response = realloc(http_response, 
-            (strlen(http_response) + strlen(page) + 1)*sizeof(char)
-        );
-        strcat(http_response, page);
-    } else {
-        uinput_event(ev);
-    }
+    http_response = realloc(http_response, 
+        (strlen(http_response) + strlen(page) + 1)*sizeof(char)
+    );
+    strcat(http_response, page);
 
     write(sock, http_response, strlen(http_response));
     close(sock);
