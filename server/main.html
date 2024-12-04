@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Canvas Test</title>
+    </head>
+    <body>
+        <script>
+        var canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
+
+        document.body.style.margin = 0;
+        var ctx = canvas.getContext('2d');
+        var pos = { x: 0, y: 0 };
+        var ready = false;
+
+        resize();
+
+        window.addEventListener('resize', resize);
+        document.addEventListener('mousemove', draw);
+        document.addEventListener('mousedown', setPosition);
+        document.addEventListener('mouseenter', setPosition);
+        
+        // Touch event listeners
+        document.addEventListener('touchstart', setPosition);
+        document.addEventListener('touchmove', draw);
+        document.addEventListener('touchend', () => { ready = false; });
+
+        // new position from mouse/touch event
+        function setPosition(e) {
+            if (e.touches) {
+                pos.x = e.touches[0].clientX;
+                pos.y = e.touches[0].clientY;
+            } else {
+                pos.x = e.clientX;
+                pos.y = e.clientY;
+            }
+            fetch("http://192.168.0.13:8000/main.html?X=" + pos.x + "&Y=" + pos.y);
+            ready = true;
+        }
+
+        // resize canvas
+        function resize() {
+            ctx.canvas.width = window.innerWidth;
+            ctx.canvas.height = window.innerHeight;
+        }
+
+        function draw(e) {
+            e.preventDefault(); // Prevent scrolling when touching the canvas
+            if (e.touches) {
+                fetch("http://192.168.0.13:8000/main.html?X=" + e.touches[0].clientX + "&Y=" + e.touches[0].clientY);
+                if (!ready) {
+                    return;
+                }
+                console.log(
+                    "X:" + e.touches[0].clientX + " " +
+                    "Y:" + e.touches[0].clientY + " " +
+                    e.touches.length + " " +
+                    window.innerWidth + " " +
+                    window.innerHeight
+                );
+
+                ctx.beginPath(); // begin
+
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#c0392b';
+
+                ctx.moveTo(pos.x, pos.y); // from
+                setPosition(e);
+                ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY); // to
+
+                ctx.stroke(); // draw it!
+            } else {
+                fetch("http://192.168.0.13:8000/main.html?but=" + e.buttons);
+                if (!ready) {
+                    return;
+                }
+                console.log(
+                    "X:" + e.clientX + " " +
+                    "Y:" + e.clientY + " " +
+                    e.buttons + " " +
+                    window.innerWidth + " " +
+                    window.innerHeight
+                );
+
+                ctx.beginPath(); // begin
+
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#c0392b';
+
+                ctx.moveTo(pos.x, pos.y); // from
+                setPosition(e);
+                ctx.lineTo(e.clientX, e.clientY); // to
+
+                ctx.stroke(); // draw it!
+            }
+        }
+        </script>
+    </body>
+</html>
+
