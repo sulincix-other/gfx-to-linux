@@ -13,6 +13,7 @@
         document.body.style.margin = 0;
         var ctx = canvas.getContext('2d');
         var pos = { x: 0, y: 0 };
+        var button = 0;
 
         canvas.oncontextmenu = function (e) {
             e.preventDefault();
@@ -32,11 +33,17 @@
         document.addEventListener('touchend', on_release);
 
         function on_press(e) {
-            var tbody = "type:\tkey\n";
+            var tbody = "type:\tEV_KEY\n";
             if (e.touches) {
-                tbody += "code:330\t\n";
+                tbody += "code:\tBTN_TOUCH\n";
+                button = 330;
             } else {
-                tbody += "code:\t" + e.buttons + "\n";
+                button = e.buttons;
+                if (e.buttons == 1){
+                    tbody += "code:\tBTN_LEFT\n";
+                } else if (e.buttons == 2) {
+                    tbody += "code:\tBTN_RIGHT\n";
+                }
             }
             tbody += "value:\t1\n\0";
             socket.send(tbody)
@@ -44,12 +51,15 @@
 
         function on_release(e) {
             var tbody = "type:\tEV_KEY\n";
-            if (e.touches) {
-                tbody += "code:330\t\n";
-            } else {
-                tbody += "code:\t" + e.buttons + "\n";
+            if (button == 1){
+                tbody += "code:\tBTN_LEFT\n";
+            } else if (button == 2) {
+                tbody += "code:\tBTN_RIGHT\n";
+            } else if (button == 330) {
+                tbody += "code:\tBTN_TOUCH\n";
             }
-            tbody += "value:\t0\n";
+            button = 0;
+            tbody += "value:\t0\n\0";
             socket.send(tbody)
         }
 
@@ -62,6 +72,8 @@
                 pos.x = e.clientX;
                 pos.y = e.clientY;
             }
+            pos.x = (pos.x * 1920) / ctx.canvas.width;
+            pos.y = (pos.y * 1080) / ctx.canvas.height;
             var tbody = "type:\tEV_ABS\n";
             tbody += "code:\tABS_X\n";
             tbody += "value:\t"+pos.x+"\n\0";

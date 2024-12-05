@@ -23,6 +23,8 @@ void uinput_init() {
 		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
 	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
 		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
+	if (ioctl(fd, UI_SET_KEYBIT, BTN_RIGHT) < 0)
+		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
 	if (ioctl(fd, UI_SET_KEYBIT, BTN_TOOL_PEN) < 0)
 		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
 	if (ioctl(fd, UI_SET_KEYBIT, BTN_STYLUS) < 0)
@@ -98,13 +100,13 @@ void send_event(int type, int code, int value) {
 	ev.type = type;
 	ev.code = code;
 	ev.value = value;
+        printf("%d %d %d\n", ev.type, ev.code, ev.value);
 	if (write(fd, &ev, sizeof(ev)) < 0)
 		fprintf(stderr,"error: write()");
 }
 
 static int press = 0;
 void uinput_event(Event ev){
-    printf("%d %d %d\n", ev.type, ev.code, ev.value);
     send_event(ev.type, ev.code, ev.value);
-    send_event(EV_SYN, SYN_REPORT, 1);
+    send_event(EV_SYN, SYN_REPORT, 0);
 }

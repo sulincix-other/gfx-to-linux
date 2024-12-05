@@ -28,8 +28,12 @@ Event parse_data(char* data){
                 ev->code = ABS_X;
             } else if(startswith(val, "ABS_Y")){
                 ev->code = ABS_Y;
-            } else {
-                ev->code = atoi(val);
+            } else if(startswith(val, "BTN_TOUCH")){
+                ev->code = BTN_TOUCH;
+            } else if(startswith(val, "BTN_LEFT")){
+                ev->code = BTN_LEFT;
+            } else if(startswith(val, "BTN_RIGHT")){
+                ev->code = BTN_RIGHT;
             }
 
         }if(startswith(token, "value:")){
