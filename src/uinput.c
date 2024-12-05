@@ -68,9 +68,9 @@ void uinput_init() {
 
           memset(&abs_setup, 0, sizeof(abs_setup));
           abs_setup.code = ABS_PRESSURE;
-          abs_setup.absinfo.value = 0;
+          abs_setup.absinfo.value = 1;
           abs_setup.absinfo.minimum = 0;
-          abs_setup.absinfo.maximum = INT16_MAX;
+          abs_setup.absinfo.maximum = 1;
           abs_setup.absinfo.fuzz = 0;
           abs_setup.absinfo.flat = 0;
           abs_setup.absinfo.resolution = 0;
