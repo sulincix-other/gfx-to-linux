@@ -21,35 +21,55 @@
         resize();
 
         window.addEventListener('resize', resize);
-        document.addEventListener('mousemove', setPosition);
-        document.addEventListener('mousedown', setPosition);
-        document.addEventListener('mouseup', setPosition);
-        document.addEventListener('mouseenter', setPosition);
+        document.addEventListener('mousemove', on_move);
+        document.addEventListener('mousedown', on_press);
+        document.addEventListener('mouseup', on_release);
+        document.addEventListener('mouseenter', on_move);
         
         // Touch event listeners
-        document.addEventListener('touchstart', setPosition);
-        document.addEventListener('touchmove', setPosition);
-        document.addEventListener('touchend', setPosition);
+        document.addEventListener('touchstart', on_press);
+        document.addEventListener('touchmove', on_move);
+        document.addEventListener('touchend', on_release);
+
+        function on_press(e) {
+            var tbody = "type:\tkey\n";
+            if (e.touches) {
+                tbody += "code:330\t\n";
+            } else {
+                tbody += "code:\t" + e.buttons + "\n";
+            }
+            tbody += "value:\t1\n\0";
+            socket.send(tbody)
+        }
+
+        function on_release(e) {
+            var tbody = "type:\tEV_KEY\n";
+            if (e.touches) {
+                tbody += "code:330\t\n";
+            } else {
+                tbody += "code:\t" + e.buttons + "\n";
+            }
+            tbody += "value:\t0\n";
+            socket.send(tbody)
+        }
 
         // new position from mouse/touch event
-        function setPosition(e) {
+        function on_move(e) {
             if (e.touches) {
                 pos.x = e.touches[0].clientX;
                 pos.y = e.touches[0].clientY;
-                e.buttons = 330;
             } else {
                 pos.x = e.clientX;
                 pos.y = e.clientY;
             }
-            var fbody = "X:\t" + (pos.x * 1920) / ctx.canvas.width  + "\n" +
-               "Y:\t" + (pos.y * 1080) / ctx.canvas.height + "\n" +
-               "Buttons:\t" + e.buttons + "\n" +
-               "Status:\tOK\0";
-           send(fbody);
-        }
-
-        function send(data) {
-            socket.send(data);
+            var tbody = "type:\tEV_ABS\n";
+            tbody += "code:\tABS_X\n";
+            tbody += "value:\t"+pos.x+"\n\0";
+            socket.send(tbody);
+            tbody = "type:\tEV_ABS\n";
+            tbody += "code:\tABS_Y\n";
+            tbody += "value:\t"+pos.y+"\n\0";
+            socket.send(tbody);
         }
 
         // resize canvas

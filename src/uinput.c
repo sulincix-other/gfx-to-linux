@@ -104,25 +104,7 @@ void send_event(int type, int code, int value) {
 
 static int press = 0;
 void uinput_event(Event ev){
-    printf("Buttons:%d\nX:%d\nY:%d\n\n",
-        ev.buttons,
-        ev.x,
-        ev.y
-    );
-    
-    send_event(EV_ABS, ABS_X, ev.x);
-    send_event(EV_ABS, ABS_Y, ev.y);
+    printf("%d %d %d\n", ev.type, ev.code, ev.value);
+    send_event(ev.type, ev.code, ev.value);
     send_event(EV_SYN, SYN_REPORT, 1);
-    if (ev.buttons != 0 && !press) {
-        press = 1;
-        send_event(EV_KEY, BTN_LEFT, 1);
-        send_event(EV_SYN, SYN_REPORT, 1);
-        return;
-    }
-    if (ev.buttons == 0 && press) {
-        press = 0;
-        send_event(EV_KEY, BTN_LEFT, 0);
-        send_event(EV_SYN, SYN_REPORT, 1);
-        return;
-    }
 }

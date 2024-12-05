@@ -1,9 +1,9 @@
 #ifndef _gfx2linux_h
 #define _gfx2linux_h
 typedef struct _event {
-    int buttons;
-    int x;
-    int y;
+    int type;
+    int code;
+    int value;
 } Event;
 
 Event parse_data(char* data);

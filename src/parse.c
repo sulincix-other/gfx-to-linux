@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <linux/uinput.h>
+
 
 #include "gfx2linux.h"
 
@@ -11,14 +13,27 @@ Event parse_data(char* data){
     char *token;
     token = strtok(data, "\n");
     Event *ev = calloc(1, sizeof(Event));
-    ev->buttons = -1;
+    char* val;
     while (token != NULL) {
-        if(startswith(token, "Buttons:")){
-            ev->buttons = atoi(token+9);
-        }if(startswith(token, "X:")){
-            ev->x = atoi(token+2);
-        }if(startswith(token, "Y:")){
-            ev->y = atoi(token+2);
+        if(startswith(token, "type:")){
+            val = strdup(token+6);
+            if(startswith(val, "EV_KEY")){
+                ev->type = EV_KEY;
+            }else if(startswith(val, "EV_ABS")){
+                ev->type = EV_ABS;
+            }
+        }if(startswith(token, "code:")){
+            val = strdup(token+6);
+            if(startswith(val, "ABS_X")){
+                ev->code = ABS_X;
+            } else if(startswith(val, "ABS_Y")){
+                ev->code = ABS_Y;
+            } else {
+                ev->code = atoi(val);
+            }
+
+        }if(startswith(token, "value:")){
+            ev->value = atoi(token+7);
         }
         token = strtok(NULL, "\n");
     }
