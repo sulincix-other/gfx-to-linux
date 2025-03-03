@@ -15,7 +15,7 @@ deps = [
 # create html2c
 h = custom_target('html2c',
     command: [
-        '/bin/sh',
+        '/bin/bash',
         meson.current_source_dir()/'tools/html2c.sh',
         meson.current_source_dir() / 'src/page.html',
         meson.build_root() /'page.c'

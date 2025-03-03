@@ -34,6 +34,8 @@ Event parse_data(char* data){
                 ev->code = BTN_LEFT;
             } else if(startswith(val, "BTN_RIGHT")){
                 ev->code = BTN_RIGHT;
+            } else {
+                ev->code = atoi(val);
             }
 
         }if(startswith(token, "value:")){

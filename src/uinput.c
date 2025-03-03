@@ -41,6 +41,9 @@ void uinput_init() {
 		fprintf(stderr,"error: ioctl UI_SETEVBIT ABS_Y");
 	if (ioctl(fd, UI_SET_ABSBIT, ABS_PRESSURE) < 0)
 		fprintf(stderr,"error: ioctl UI_SETEVBIT ABS_PRESSURE");
+        for (int i = 1; i <= 245; i++) {
+            ioctl(fd, UI_SET_KEYBIT, i);
+        }
 
         {
           struct uinput_abs_setup abs_setup;
@@ -92,9 +95,7 @@ void uinput_init() {
           if (ioctl(fd, UI_DEV_CREATE) < 0)
             fprintf(stderr,"error: ioctl");
         }
-    for (int i = 1; i <= 245; i++) {
-        ioctl(fd, UI_SET_KEYBIT, i);
-    }
+
 }
 
 
