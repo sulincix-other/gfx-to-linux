@@ -1,9 +1,10 @@
-const socket = new WebSocket('ws://'+window.location.hostname+":8080");
+const socket = new WebSocket('ws://' + window.location.hostname + ":8080");
+let keyboardLayout = {};
 fetch('./keycodes.json')
-  .then(response => response.json())
-  .then(data => {
-    keyboardLayout = data;
-});
+    .then(response => response.json())
+    .then(data => {
+        keyboardLayout = data;
+    });
 
 function getValueFromLabel(label) {
     // Iterate through the keyboard layout array
@@ -71,7 +72,7 @@ function on_press(e) {
         button = 330;
     } else {
         button = e.buttons;
-        if (e.buttons == 1){
+        if (e.buttons == 1) {
             tbody += "code:\tBTN_LEFT\n";
         } else if (e.buttons == 2) {
             tbody += "code:\tBTN_RIGHT\n";
@@ -84,7 +85,7 @@ function on_press(e) {
 function on_release(e) {
     e.preventDefault();
     var tbody = "type:\tEV_KEY\n";
-    if (button == 1){
+    if (button == 1) {
         tbody += "code:\tBTN_LEFT\n";
     } else if (button == 2) {
         tbody += "code:\tBTN_RIGHT\n";
@@ -96,7 +97,10 @@ function on_release(e) {
     socket.send(tbody)
 }
 
-var pos = { x: 0, y: 0 };
+var pos = {
+    x: 0,
+    y: 0
+};
 var button = 0;
 // new position from mouse/touch event
 function on_move(e) {
@@ -113,11 +117,75 @@ function on_move(e) {
     pos.y = (pos.y * 2160) / rect.height;
     var tbody = "type:\tEV_ABS\n";
     tbody += "code:\tABS_X\n";
-    tbody += "value:\t"+pos.x+"\n\0";
+    tbody += "value:\t" + pos.x + "\n\0";
     socket.send(tbody);
     tbody = "type:\tEV_ABS\n";
     tbody += "code:\tABS_Y\n";
-    tbody += "value:\t"+pos.y+"\n\0";
+    tbody += "value:\t" + pos.y + "\n\0";
     socket.send(tbody);
 }
 
+document.getElementById('keyboard').style.display = 'none';
+let content = document.getElementById('tablet');
+
+function showKeyboard() {
+    document.getElementById('keyboard').style.display = 'block';
+    document.getElementById('tablet').style.display = 'none';
+    content = document.getElementById('keyboard');
+}
+
+function showGfxTablet() {
+    document.getElementById('keyboard').style.display = 'none';
+    document.getElementById('tablet').style.display = 'block';
+    content = document.getElementById('tablet');
+}
+
+function showFullScreen() {
+
+    if (content.requestFullscreen) {
+        content.requestFullscreen();
+    } else if (content.mozRequestFullScreen) { // Firefox
+        content.mozRequestFullScreen();
+    } else if (content.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+        content.webkitRequestFullscreen();
+    } else if (content.msRequestFullscreen) { // IE/Edge
+        content.msRequestFullscreen();
+    }
+}
+
+
+// Define the keyboard layout
+const keyboardLayoutLabels = [
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='],
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\''],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/'],
+    [' ', 'Enter', 'Backspace']
+];
+
+// Function to create the keyboard
+function createKeyboard() {
+    const keyboardContainer = document.getElementById('keyboard');
+
+    keyboardLayoutLabels.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        row.forEach(key => {
+            const keyButton = document.createElement('button');
+            keyButton.className = 'key';
+            keyButton.textContent = key;
+
+            // Add mouse event listeners
+            keyButton.onmousedown = (e) => on_key_press(getValueFromLabel(key));
+            keyButton.onmouseup = (e) => on_key_release(getValueFromLabel(key));
+
+            rowDiv.appendChild(keyButton);
+        });
+
+        keyboardContainer.appendChild(rowDiv);
+    });
+}
+
+// Call the function to create the keyboard
+createKeyboard();
