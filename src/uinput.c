@@ -5,108 +5,62 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <libevdev-1.0/libevdev/libevdev-uinput.h>
 
 #include "gfx2linux.h"
 
+struct libevdev *dev;
+struct libevdev_uinput *uidev;
+struct input_absinfo absinfo_x;
+struct input_absinfo absinfo_y;
+int err;
 static int fd;
-void uinput_init() {
-    if ((fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK)) < 0)
-		fprintf(stderr,"error: open");
-	// enable synchronization
-	if (ioctl(fd, UI_SET_EVBIT, EV_SYN) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_EVBIT EV_SYN");
+void uinput_init(){
+    // load module
+    err = system("modprobe uinput");
+    if (err != 0) exit(err);
 
-	// enable 1 button
-	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_EVBIT EV_KEY");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_TOUCH) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_RIGHT) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_TOOL_PEN) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_STYLUS) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
-	if (ioctl(fd, UI_SET_KEYBIT, BTN_STYLUS2) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_KEYBIT");
+    dev = libevdev_new();
+    libevdev_set_name(dev, "Amogus device");
 
-	// enable 2 main axes + pressure (absolute positioning)
-	if (ioctl(fd, UI_SET_EVBIT, EV_ABS) < 0)
-		fprintf(stderr,"error: ioctl UI_SET_EVBIT EV_ABS");
-	if (ioctl(fd, UI_SET_ABSBIT, ABS_X) < 0)
-		fprintf(stderr,"error: ioctl UI_SETEVBIT ABS_X");
-	if (ioctl(fd, UI_SET_ABSBIT, ABS_Y) < 0)
-		fprintf(stderr,"error: ioctl UI_SETEVBIT ABS_Y");
-	if (ioctl(fd, UI_SET_ABSBIT, ABS_PRESSURE) < 0)
-		fprintf(stderr,"error: ioctl UI_SETEVBIT ABS_PRESSURE");
-        for (int i = 1; i <= 245; i++) {
-            ioctl(fd, UI_SET_KEYBIT, i);
-        }
+    // ABS info
+    absinfo_x.maximum = 3840;
+    absinfo_x.resolution = 1;
+    absinfo_y.maximum = 2160;
+    absinfo_y.resolution = 1;
 
-        {
-          struct uinput_abs_setup abs_setup;
-          struct uinput_setup setup;
+    // EV_ABS
+    libevdev_enable_event_type(dev, EV_ABS);
+    libevdev_enable_event_code(dev, EV_ABS, ABS_X, &absinfo_x);
+    libevdev_enable_event_code(dev, EV_ABS, ABS_Y, &absinfo_y);
 
-          memset(&abs_setup, 0, sizeof(abs_setup));
-          abs_setup.code = ABS_X;
-          abs_setup.absinfo.value = 0;
-          abs_setup.absinfo.minimum = 0;
-          abs_setup.absinfo.maximum = 1920;
-          abs_setup.absinfo.fuzz = 0;
-          abs_setup.absinfo.flat = 0;
-          abs_setup.absinfo.resolution = 1;
-          if (ioctl(fd, UI_ABS_SETUP, &abs_setup) < 0)
-            fprintf(stderr,"error: UI_ABS_SETUP ABS_X");
+    // EV_KEY (mouse)
+    libevdev_enable_event_type(dev, EV_KEY);
+    libevdev_enable_event_code(dev, EV_KEY, BTN_RIGHT, NULL);
+    libevdev_enable_event_code(dev, EV_KEY, BTN_TOUCH, NULL);
+    libevdev_enable_event_code(dev, EV_KEY, BTN_LEFT, NULL);
 
-          memset(&abs_setup, 0, sizeof(abs_setup));
-          abs_setup.code = ABS_Y;
-          abs_setup.absinfo.value = 0;
-          abs_setup.absinfo.minimum = 0;
-          abs_setup.absinfo.maximum = 1080;
-          abs_setup.absinfo.fuzz = 0;
-          abs_setup.absinfo.flat = 0;
-          abs_setup.absinfo.resolution = 1;
-          if (ioctl(fd, UI_ABS_SETUP, &abs_setup) < 0)
-            fprintf(stderr,"error: UI_ABS_SETUP ABS_Y");
+    // EV_KEY (keyboard)
+    for (int i = 1; i <= 245; i++) {
+        libevdev_enable_event_code(dev, EV_KEY, i, NULL);
+    }
 
-          memset(&abs_setup, 0, sizeof(abs_setup));
-          abs_setup.code = ABS_PRESSURE;
-          abs_setup.absinfo.value = 1;
-          abs_setup.absinfo.minimum = 0;
-          abs_setup.absinfo.maximum = 1;
-          abs_setup.absinfo.fuzz = 0;
-          abs_setup.absinfo.flat = 0;
-          abs_setup.absinfo.resolution = 0;
-          if (ioctl(fd, UI_ABS_SETUP, &abs_setup) < 0)
-            fprintf(stderr,"error: UI_ABS_SETUP ABS_PRESSURE");
+    // EV_REL
+    libevdev_enable_event_type(dev, EV_REL);
+    libevdev_enable_event_code(dev, EV_REL, REL_X, NULL);
+    libevdev_enable_event_code(dev, EV_REL, REL_Y, NULL);
 
-          memset(&setup, 0, sizeof(setup));
-          snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "Amogus Touch Screen Device");
-          setup.id.bustype = BUS_VIRTUAL;
-          setup.id.vendor  = 0x1;
-          setup.id.product = 0x1;
-          setup.id.version = 2;
-          setup.ff_effects_max = 0;
-          if (ioctl(fd, UI_DEV_SETUP, &setup) < 0)
-            fprintf(stderr,"error: UI_DEV_SETUP");
 
-          if (ioctl(fd, UI_DEV_CREATE) < 0)
-            fprintf(stderr,"error: ioctl");
-        }
+    err = libevdev_uinput_create_from_device(dev, LIBEVDEV_UINPUT_OPEN_MANAGED, &uidev);
+    if (err != 0) exit(err);
 
+    sleep(1);
 }
 
-
 void send_event(int type, int code, int value) {
-	struct input_event ev;
-	ev.type = type;
-	ev.code = code;
-	ev.value = value;
-        printf("%d %d %d\n", ev.type, ev.code, ev.value);
-	if (write(fd, &ev, sizeof(ev)) < 0)
-		fprintf(stderr,"error: write()");
+    //printf("%d %d %d\n", type, code, value);
+	libevdev_uinput_write_event(uidev, type, code, value);
+	libevdev_uinput_write_event(uidev, EV_SYN, SYN_REPORT, 0);
 }
 
 static int press = 0;

@@ -9,7 +9,8 @@ srcs = [
 ]
 
 deps = [
-    dependency('libwebsockets')
+    dependency('libwebsockets'),
+    dependency('libevdev')
 ]
 
 # create html2c
