@@ -60,12 +60,9 @@ input {
     transition: background-color 0.2s;
 }
 
-.key:hover {
-    background-color: #d0d0d0;
-}
-
-.key:active {
-    background-color: #c0c0c0;
+.key.active {
+    background-color: #4CAF50;
+    color: white;
 }
 
 .space {
