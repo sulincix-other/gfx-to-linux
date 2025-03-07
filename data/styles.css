@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align items to the start */
+    justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
@@ -17,7 +17,7 @@ input {
     border: 1px solid #ccc;
 }
 
-.touchpad {
+.tablet {
     width: 90%;
     flex-grow: 1; /* Allow the touchpad to grow and fill available space */
     background-color: #e0e0e0;
@@ -70,5 +70,11 @@ input {
 
 .space {
     flex: 1;
+}
+
+.tablet, .keyboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 

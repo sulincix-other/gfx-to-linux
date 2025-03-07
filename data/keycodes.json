@@ -48,7 +48,19 @@
         {"key": "/", "code": "Slash", "value": 53},
         {"key": " ", "code": "Space", "value": 57},
         {"key": "Enter", "code": "Enter", "value": 28},
-        {"key": "Backspace", "code": "Backspace", "value": 14}
+        {"key": "Backspace", "code": "Backspace", "value": 14},
+        {"key": "Esc", "code": "Escape", "value": 41},
+        {"key": "Tab", "code": "Tab", "value": 43},
+        {"key": "Caps Lock", "code": "CapsLock", "value": 58},
+        {"key": "Enter", "code": "Enter", "value": 40},
+        {"key": "Shift", "code": "ShiftLeft", "value": 16},
+        {"key": "Ctrl", "code": "ControlLeft", "value": 17},
+        {"key": "Alt", "code": "AltLeft", "value": 18},
+        {"key": "Altgr", "code": "AltRight", "value": 18},
+        {"key": "Space", "code": "Space", "value": 32},
+        {"key": "Left", "code": "ArrowLeft", "value": 37},
+        {"key": "Down", "code": "ArrowDown", "value": 40},
+        {"key": "Right", "code": "ArrowRight", "value": 39}
     ]
 }
 
