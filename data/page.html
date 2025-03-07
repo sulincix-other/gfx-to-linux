@@ -9,27 +9,30 @@
 <body id="content">
      <div class="tabs">
         <button class="key" onclick="showKeyboard()">Keyboard</button>
-        <button class="key" onclick="showTouchpad()">Touchpad</button>
+        <button class="key" onclick="showGfxTablet()">Gfx Tablet</button>
         <button class="key" onclick="showFullScreen()">FullScreen</button>
     </div>
-    <div id="touchpad" class="touchpad"></div>
+    <div id="tablet" class="touchpad"></div>
     <div id="keyboard" class="keyboard"></div>
     <script src="script.js"></script>
     <script>
 
 document.getElementById('keyboard').style.display = 'none';
+let content = document.getElementById('tablet');
 
 function showKeyboard(){
     document.getElementById('keyboard').style.display = 'block';
-    document.getElementById('touchpad').style.display = 'none';
+    document.getElementById('tablet').style.display = 'none';
+    content = document.getElementById('keyboard');
 }
-function showTouchpad(){
+function showGfxTablet(){
     document.getElementById('keyboard').style.display = 'none';
-    document.getElementById('touchpad').style.display = 'block';
+    document.getElementById('tablet').style.display = 'block';
+    content = document.getElementById('tablet');
 }
 
 function showFullScreen(){
-    const content = document.getElementById('content');
+    
     if (content.requestFullscreen) {
         content.requestFullscreen();
     } else if (content.mozRequestFullScreen) { // Firefox

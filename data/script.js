@@ -31,19 +31,19 @@ function getValueFromCode(code) {
     return null;
 }
 
-// Touchpad functionality
-const touchpad = document.getElementById('touchpad');
-touchpad.addEventListener('mousemove', on_move);
-touchpad.addEventListener('mousedown', on_press);
-touchpad.addEventListener('mouseup', on_release);
-touchpad.addEventListener('mouseenter', on_move);
+// tablet functionality
+const tablet = document.getElementById('tablet');
+tablet.addEventListener('mousemove', on_move);
+tablet.addEventListener('mousedown', on_press);
+tablet.addEventListener('mouseup', on_release);
+tablet.addEventListener('mouseenter', on_move);
 
 // Touch event listeners
 document.addEventListener('keydown', (e) => on_key_press(getValueFromCode(e.code)));
 document.addEventListener('keyup', (e) => on_key_release(getValueFromCode(e.code)));
-touchpad.addEventListener('touchstart', on_press);
-touchpad.addEventListener('touchmove', on_move);
-touchpad.addEventListener('touchend', on_release);
+tablet.addEventListener('touchstart', on_press);
+tablet.addEventListener('touchmove', on_move);
+tablet.addEventListener('touchend', on_release);
 
 // Handle key press events
 function on_key_press(code) {
@@ -101,7 +101,7 @@ var button = 0;
 // new position from mouse/touch event
 function on_move(e) {
     e.preventDefault();
-    var rect = touchpad.getBoundingClientRect();
+    var rect = tablet.getBoundingClientRect();
     if (e.touches) {
         pos.x = e.touches[0].clientX - rect.left;
         pos.y = e.touches[0].clientY - rect.top;
@@ -109,8 +109,8 @@ function on_move(e) {
         pos.x = e.clientX - rect.left;
         pos.y = e.clientY - rect.top;
     }
-    pos.x = (pos.x * 1920) / rect.width;
-    pos.y = (pos.y * 1080) / rect.height;
+    pos.x = (pos.x * 3920) / rect.width;
+    pos.y = (pos.y * 2160) / rect.height;
     var tbody = "type:\tEV_ABS\n";
     tbody += "code:\tABS_X\n";
     tbody += "value:\t"+pos.x+"\n\0";
