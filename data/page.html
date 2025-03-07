@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Style Virtual Keyboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body id="content">
+     <div class="tabs">
+        <button class="key" onclick="showKeyboard()">Keyboard</button>
+        <button class="key" onclick="showTouchpad()">Touchpad</button>
+        <button class="key" onclick="showFullScreen()">FullScreen</button>
+    </div>
+    <div id="touchpad" class="touchpad"></div>
+    <div id="keyboard" class="keyboard"></div>
+    <script src="script.js"></script>
+    <script>
+
+document.getElementById('keyboard').style.display = 'none';
+
+function showKeyboard(){
+    document.getElementById('keyboard').style.display = 'block';
+    document.getElementById('touchpad').style.display = 'none';
+}
+function showTouchpad(){
+    document.getElementById('keyboard').style.display = 'none';
+    document.getElementById('touchpad').style.display = 'block';
+}
+
+function showFullScreen(){
+    const content = document.getElementById('content');
+    if (content.requestFullscreen) {
+        content.requestFullscreen();
+    } else if (content.mozRequestFullScreen) { // Firefox
+        content.mozRequestFullScreen();
+    } else if (content.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+        content.webkitRequestFullscreen();
+    } else if (content.msRequestFullscreen) { // IE/Edge
+        content.msRequestFullscreen();
+    }
+}
+
+
+// Define the keyboard layout
+const keyboardLayoutLabels = [
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='],
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\''],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/'],
+    [' ', 'Enter', 'Backspace']
+];
+
+// Function to create the keyboard
+function createKeyboard() {
+    const keyboardContainer = document.getElementById('keyboard');
+
+    keyboardLayoutLabels.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        row.forEach(key => {
+            const keyButton = document.createElement('button');
+            keyButton.className = 'key';
+            keyButton.textContent = key;
+
+            // Add mouse event listeners
+            keyButton.onmousedown = (e) => on_key_press(getValueFromLabel(key));
+            keyButton.onmouseup = (e) => on_key_release(getValueFromLabel(key));
+
+            rowDiv.appendChild(keyButton);
+        });
+
+        keyboardContainer.appendChild(rowDiv);
+    });
+}
+
+// Call the function to create the keyboard
+createKeyboard();
+
+    </script>
+</body>
+</html>
+

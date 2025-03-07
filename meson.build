@@ -14,16 +14,18 @@ deps = [
 ]
 
 # create html2c
-h = custom_target('html2c',
-    command: [
-        '/bin/bash',
-        meson.current_source_dir()/'tools/html2c.sh',
-        meson.current_source_dir() / 'src/page.html',
-        meson.build_root() /'page.c'
-     ],
-    output: 'page.c'
-)
-srcs += [h]
+foreach data : run_command('ls', 'data/', check:true).stdout().strip().split('\n')
+    h = custom_target(data,
+        command: [
+            '/bin/bash',
+            meson.current_source_dir()/'tools/html2c.sh',
+            meson.current_source_dir() / 'data' / data,
+            meson.build_root() / data + '.c'
+         ],
+        output: data + '.c'
+    )
+    srcs += [h]
+endforeach
 
 # Create an executable
 executable('main', srcs, dependencies: deps)

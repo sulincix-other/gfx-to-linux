@@ -26,7 +26,7 @@ static int callback_echo(struct lws *wsi,
             break;
 
         case LWS_CALLBACK_RECEIVE:
-            //printf("Received: %s\n", (char *)in);
+            printf("Received: %s\n", (char *)in);
             Event ev = parse_data((char*)in);
             uinput_event(ev);
             //lws_write(wsi, (unsigned char *)in, len, LWS_WRITE_TEXT);

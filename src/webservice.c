@@ -14,29 +14,90 @@
 #include "gfx2linux.h"
 
 extern char* page;
+extern char* styles;
+extern char* script;
+extern char* keycodes;
 void *handle_client(void *client_socket) {
     int sock = *(int *)client_socket;
     free(client_socket);
 
     char buffer[BUFFER_SIZE];
     read(sock, buffer, sizeof(buffer) - 1);
-    // Simple HTTP response
-    char *http_response = strdup( 
-        "HTTP/1.1 200 OK\n"
-        "Content-Type: text/html\n"
-        "Connection: close\n"
-        "\n");
+    buffer[sizeof(buffer) - 1] = '\0'; // Null-terminate the buffer
 
-    http_response = realloc(http_response, 
-        (strlen(http_response) + strlen(page) + 1)*sizeof(char)
-    );
-    strcat(http_response, page);
+    // Parse the GET request
+    char *method = strtok(buffer, " ");
+    char *path = strtok(NULL, " ");
+    
+    // Check if the method is GET
+    if (method == NULL || path == NULL || strcmp(method, "GET") != 0) {
+        // Respond with 400 Bad Request
+        char *http_response = "HTTP/1.1 400 Bad Request\nConnection: close\n\n";
+        write(sock, http_response, strlen(http_response));
+        close(sock);
+        return NULL;
+    }
 
+    // Remove leading '/' from path
+    if (path[0] == '/') {
+        path++;
+    }
+
+    // Simple routing based on the path
+    char *http_response;
+    if (strcmp(path, "styles.css") == 0) {
+        // Respond with style content
+        http_response = strdup(
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/css\n"
+            "Connection: close\n\n"
+        );
+        http_response = realloc(http_response, 
+            (strlen(http_response) + strlen(styles) + 1)*sizeof(char)
+        );
+        strcat(http_response, styles);
+    } else if (strcmp(path, "script.js") == 0) {
+        // Respond with js content
+        http_response = strdup(
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/script\n"
+            "Connection: close\n\n"
+        );
+        http_response = realloc(http_response, 
+            (strlen(http_response) + strlen(script) + 1)*sizeof(char)
+        );
+        strcat(http_response, script);
+    } else if (strcmp(path, "keycodes.json") == 0) {
+        // Respond with js content
+        http_response = strdup(
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/json\n"
+            "Connection: close\n\n"
+        );
+        http_response = realloc(http_response, 
+            (strlen(http_response) + strlen(keycodes) + 1)*sizeof(char)
+        );
+        strcat(http_response, keycodes);
+    } else {
+        // Respond with html content
+        http_response = strdup(
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/html\n"
+            "Connection: close\n\n"
+        );
+        http_response = realloc(http_response, 
+            (strlen(http_response) + strlen(page) + 1)*sizeof(char)
+        );
+        strcat(http_response, page);
+    }
+
+    // Send the response
     write(sock, http_response, strlen(http_response));
-    close(sock);
     free(http_response);
+    close(sock);
     return NULL;
 }
+
 
 
 int service_main() {
