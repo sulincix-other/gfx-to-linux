@@ -59,6 +59,7 @@
         {"key": "Space", "code": "Space", "value": 57},
         {"key": "Left", "code": "ArrowLeft", "value": 105},
         {"key": "Down", "code": "ArrowDown", "value": 108},
+        {"key": "Up", "code": "ArrowUp", "value": 103},
         {"key": "Right", "code": "ArrowRight", "value": 106},
         {"key": "PgUp", "code": "PageUp", "value": 104},
         {"key": "PgDn", "code": "PageDown", "value": 109},
