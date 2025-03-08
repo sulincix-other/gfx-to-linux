@@ -1,4 +1,4 @@
-   /* General Body Styles */
+    /* General Body Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -6,7 +6,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #0f0f0f;
 }
 
 /* Input Field Styles */
@@ -16,7 +16,7 @@ input {
     font-size: 18px;
     margin-bottom: 10px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #333;
 }
 
 
@@ -24,7 +24,7 @@ input {
 .tablet {
     width: 90%;
     flex-grow: 1;
-    background-color: #a0a0d0;
+    background-color: #5f5f2f;
     border-radius: 10px;
     margin-bottom: 10px;
     display: flex;
@@ -39,7 +39,7 @@ input {
 .touchpad {
     width: 90%;
     flex-grow: 1;
-    background-color: #a0d0a0;
+    background-color: #5f2f5f;
     border-radius: 10px;
     margin-bottom: 10px;
     display: flex;
@@ -52,16 +52,12 @@ input {
 
 /* Keyboard Styles */
 .keyboard {
-    width: 90%;
-    flex-grow: 1;
-    flex-direction: column;
-    background-color: #ffffff;
+    width: 99%;
+    background-color: black;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     padding: 10px;
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Row Styles for Keyboard */
@@ -73,7 +69,8 @@ input {
 
 /* Key Styles */
 .key {
-    background-color: #e0e0e0;
+    background-color: #1f1f1f;
+    color: white;
     border: none;
     border-radius: 5px;
     padding-top: 15px;
@@ -90,12 +87,12 @@ input {
 }
 
 .key:hover {
-    background-color: #d0d0d0;
+    background-color: #2f2f2f;
 }
 
 .key.active {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #b350af;
+    color: black;
 }
 .letter {
     max-width: 7%;
@@ -115,7 +112,5 @@ input {
     justify-content: center;
     align-items: center;
 }
-
-
 
 
