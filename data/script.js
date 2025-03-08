@@ -76,8 +76,8 @@ function on_press(e) {
     e.preventDefault();
     var tbody = "type:\tEV_KEY\n";
     if (e.touches) {
-        tbody += "code:\tBTN_TOUCH\n";
-        button = 330;
+        tbody += "code:\tBTN_LEFT\n";
+        button = 1;
     } else {
         button = e.buttons;
         if (e.buttons == 1) {
