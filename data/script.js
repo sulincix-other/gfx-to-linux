@@ -291,7 +291,8 @@ const modifierStates = {
     'Ctrl': false,
     'Alt': false,
     'Altgr': false,
-    'Shift': false
+    'Shift': false,
+    'Super': false
 };
 
 // Function to create the keyboard
