@@ -4,6 +4,7 @@ fetch('./keycodes.json')
     .then(response => response.json())
     .then(data => {
         keyboardLayout = data;
+        createKeyboard();
     });
 
 function getValueFromLabel(label) {
@@ -219,8 +220,13 @@ function on_touchpad_move(e) {
     
     beginPos = currentPos;
 
-    lastPos.x += deltaX;
-    lastPos.y += deltaY;
+    lastPos.x += deltaX * 5;
+    lastPos.y += deltaY * 5;
+    
+    if (lastPos.x < -1) {lastPos.x = -1};
+    if (lastPos.y < -1) {lastPos.y = -1};
+    if (lastPos.x > 3941) {lastPos.x = 3941};
+    if (lastPos.y > 2161) {lastPos.y = 2161};
     var tbody = "type:\tEV_ABS\n";
     tbody += "code:\tABS_X\n";
     tbody += "value:\t" + lastPos.x + "\n\0";
@@ -273,11 +279,11 @@ function showFullScreen() {
 
 // Define the keyboard layout
 const keyboardLayoutLabels = [
-    ['Esc', '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
-    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', '\''],
-    ['Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter'],
-    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Up'],
-    ['Ctrl', 'Alt', 'Space', 'Altgr', 'Left', 'Down', 'Right']
+    ['Esc', '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace', 'Del'],
+    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', '\'', 'Home'],
+    ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter', 'PgUp'],
+    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'End', 'Up', 'PgDn'],
+    ['Ctrl', 'Super',  'Alt', 'Space', 'Altgr', 'Left', 'Down', 'Right']
 ];
 
 // Object to keep track of the toggle states of modifier keys
@@ -300,6 +306,10 @@ function createKeyboard() {
             const keyButton = document.createElement('button');
             keyButton.className = 'key';
             keyButton.textContent = key;
+            keyButton.classList.add(key);
+            if (key.length == 1){
+                keyButton.classList.add('letter');
+            }
 
             // Add mouse event listeners
             keyButton.onmousedown = (e) => {
@@ -334,5 +344,3 @@ function createKeyboard() {
     });
 }
 
-// Call the function to create the keyboard
-createKeyboard();
