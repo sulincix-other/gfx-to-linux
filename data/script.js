@@ -132,13 +132,16 @@ function on_move(e) {
     socket.send(tbody);
 }
 
+var beginPos = { x: 0, y: 0 };
 var lastPos = { x: 0, y: 0 };
 var lastTapTime = 0;
 var tapTimeout = 300;
 var pressed = false;
+var moved = false;
 function on_touchpad_start(e) {
     e.preventDefault();
     pressed = true;
+    moved = false;
     var currentTime = new Date().getTime();
     var rect = tablet.getBoundingClientRect();
     var tapEvent = false;
@@ -159,11 +162,25 @@ function on_touchpad_start(e) {
     lastTapTime = currentTime;
 
     // Capture initial touch position
-    lastPos.x = pos.x - rect.left;
-    lastPos.y = pos.y - rect.top;
+    beginPos.x = pos.x - rect.left;
+    beginPos.y = pos.y - rect.top;
     
     
     if (tapEvent) {
+        var tbody = "type:\tEV_KEY\n";
+        tbody += "code:\tBTN_RIGHT\n";
+        tbody += "value:\t1\n\0";
+        socket.send(tbody);
+
+        tbody = "type:\tEV_KEY\n";
+        tbody += "code:\tBTN_RIGHT\n";
+        tbody += "value:\t0\n\0";
+        socket.send(tbody);
+    }
+}
+
+function on_touchpad_end(e) {
+    if(!moved){
         var tbody = "type:\tEV_KEY\n";
         tbody += "code:\tBTN_LEFT\n";
         tbody += "value:\t1\n\0";
@@ -174,9 +191,6 @@ function on_touchpad_start(e) {
         tbody += "value:\t0\n\0";
         socket.send(tbody);
     }
-}
-
-function on_touchpad_end(e) {
     pressed = false;
 }
 
@@ -185,6 +199,7 @@ function on_touchpad_move(e) {
     if(!pressed){
         return;
     }
+    moved = true;
     var rect = tablet.getBoundingClientRect();
     if (e.touches) {
         pos.x = e.touches[0].clientX - rect.left;
@@ -199,28 +214,22 @@ function on_touchpad_move(e) {
     };
 
     // Calculate the relative movement
-    var deltaX = currentPos.x - lastPos.x;
-    var deltaY = currentPos.y - lastPos.y;
+    var deltaX = currentPos.x - beginPos.x;
+    var deltaY = currentPos.y - beginPos.y;
+    
+    beginPos = currentPos;
 
-    // Send relative movement
-    send_relative_movement(deltaX, deltaY);
-
-    // Update last position
-    lastPos = currentPos;
-}
-
-function send_relative_movement(deltaX, deltaY) {
-    // Send relative X movement
-    var tbody = "type:\tEV_REL\n";
-    tbody += "code:\tREL_X\n";
-    tbody += "value:\t" + deltaX + "\n\0";
+    lastPos.x += deltaX;
+    lastPos.y += deltaY;
+    var tbody = "type:\tEV_ABS\n";
+    tbody += "code:\tABS_X\n";
+    tbody += "value:\t" + lastPos.x + "\n\0";
+    socket.send(tbody);
+    tbody = "type:\tEV_ABS\n";
+    tbody += "code:\tABS_Y\n";
+    tbody += "value:\t" + lastPos.y + "\n\0";
     socket.send(tbody);
 
-    // Send relative Y movement
-    tbody = "type:\tEV_REL\n";
-    tbody += "code:\tREL_Y\n";
-    tbody += "value:\t" + deltaY + "\n\0";
-    socket.send(tbody);
 }
 
 document.getElementById('keyboard').style.display = 'none';

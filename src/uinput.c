@@ -45,11 +45,6 @@ void uinput_init(){
         libevdev_enable_event_code(dev, EV_KEY, i, NULL);
     }
 
-    // EV_REL
-    libevdev_enable_event_type(dev, EV_REL);
-    libevdev_enable_event_code(dev, EV_REL, REL_X, NULL);
-    libevdev_enable_event_code(dev, EV_REL, REL_Y, NULL);
-
 
     err = libevdev_uinput_create_from_device(dev, LIBEVDEV_UINPUT_OPEN_MANAGED, &uidev);
     if (err != 0) exit(err);
