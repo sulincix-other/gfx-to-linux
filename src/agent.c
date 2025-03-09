@@ -63,7 +63,7 @@ void send_notification(const char *app_name, const char *summary, const char *bo
     dbus_message_iter_close_container( & args, & dict_iter);
 
     // Append timeout
-    int32_t timeout = 5000; // Timeout in milliseconds
+    int32_t timeout = 180000; // Timeout in milliseconds
     dbus_message_iter_append_basic( & args, DBUS_TYPE_INT32, & timeout);
 
     // Send the message

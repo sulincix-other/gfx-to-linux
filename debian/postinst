@@ -1,0 +1,8 @@
+#!/bin/sh
+if systemctl >/dev/null; then
+    systemctl enable gfx2linux
+elif command -v update-rc.d >/dev/null; then
+    update-rc.d gfx2linux enable
+elif command -v rc-update >/dev/null; then
+    rc-update add gfx2linux default
+fi
