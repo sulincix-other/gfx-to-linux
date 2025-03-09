@@ -5,6 +5,7 @@ fetch('./keycodes.json')
     .then(data => {
         keyboardLayout = data;
         createKeyboard('keyboard', keyboardLayoutLabels);
+        createKeyboard('presentation', presentationLayoutLabels);
     });
 
 function sendWebSocketMessage(type, code, value) {
@@ -97,10 +98,6 @@ function on_release(e) {
     sendWebSocketMessage("EV_KEY", key, "0");
 }
 
-var pos = {
-    x: 0,
-    y: 0
-};
 var button = 0;
 // new position from mouse/touch event
 function on_move(e) {
@@ -125,6 +122,7 @@ function get_position(e){
 
 var beginPos = { x: 0, y: 0 };
 var lastPos = { x: 0, y: 0 };
+var pos = { x: 0, y: 0 };
 var pressed = false;
 var moved = false;
 function on_touchpad_start(e) {
@@ -183,29 +181,20 @@ function on_touchpad_move(e) {
 }
 
 function hideAll(){
-    document.getElementById('keyboard').style.display = 'none';
-    document.getElementById('tablet').style.display = 'none';
-    document.getElementById('touchpad').style.display = 'none';
+    const pages = ['keyboard', 'tablet', 'touchpad', 'presentation'];
+    pages.forEach(page => {
+        console.log(page);
+        document.getElementById(page).style.display = 'none';
+        document.getElementById(page+"Key").classList.remove('menuKeyActive');
+    });
 }
 function showPage(page){
     hideAll();
     document.getElementById(page).style.display = 'block';
+    document.getElementById(page+"Key").classList.add('menuKeyActive');
     content = document.getElementById(page);
 }
-
-function showKeyboard(){
-    showPage('keyboard');
-}
-
-function showGfxTablet() {
-    showPage('tablet');
-}
-
-function showTouchpad() {
-    showPage('touchpad');
-}
-
-showTouchpad();
+showPage('keyboard');
 
 function showFullScreen() {
 
@@ -215,8 +204,6 @@ function showFullScreen() {
         content.mozRequestFullScreen();
     } else if (content.webkitRequestFullscreen) { // Chrome, Safari, and Opera
         content.webkitRequestFullscreen();
-    } else if (content.msRequestFullscreen) { // IE/Edge
-        content.msRequestFullscreen();
     }
 }
 
@@ -228,6 +215,13 @@ const keyboardLayoutLabels = [
     ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter', 'PgUp'],
     ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'End', 'Up', 'PgDn'],
     ['Ctrl', 'Super',  'Alt', 'Space', 'Altgr', 'Left', 'Down', 'Right']
+];
+
+const presentationLayoutLabels = [
+    ['VolDn', 'Mute', 'VolUp', 'PgUp'],
+    ['Prev', 'Play', 'Next', 'PgDn'],
+    ['Esc', 'Up', 'PrtSc', 'Enter'],
+    ['Left', 'Down', 'Right', 'F5']
 ];
 
 // Object to keep track of the toggle states of modifier keys
@@ -283,6 +277,8 @@ function createKeyboard(page, labels) {
             };
 
             rowDiv.appendChild(keyButton);
+            rowDiv.style.height = (100 / labels.length) + "%";
+            
         });
 
         container.appendChild(rowDiv);

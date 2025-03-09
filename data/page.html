@@ -8,14 +8,16 @@
 </head>
 <body id="content">
      <div class="tabs">
-        <button class="key" onclick="showKeyboard()">Keyboard</button>
-        <button class="key" onclick="showGfxTablet()">Gfx Tablet</button>
-        <button class="key" onclick="showTouchpad()">Touchpad</button>
-        <button class="key" onclick="showFullScreen()">FullScreen</button>
+        <button id="keyboardKey" class="menuKey" onclick="showPage('keyboard')">Keyboard</button>
+        <button id="tabletKey"class="menuKey" onclick="showPage('tablet')">Tablet</button>
+        <button id="touchpadKey"class="menuKey" onclick="showPage('touchpad')">Touchpad</button>
+        <button id="presentationKey"class="menuKey" onclick="showPage('presentation')">Presentation</button>
+        <button class="menuKey" onclick="showFullScreen()">FullScreen</button>
     </div>
     <div id="tablet" class="tablet"></div>
     <div id="keyboard" class="keyboard"></div>
     <div id="touchpad" class="touchpad"></div>
+    <div id="presentation" class="keyboard"></div>
     <script src="script.js"></script>
 </body>
 </html>
