@@ -1,5 +1,8 @@
 #ifndef _gfx2linux_h
 #define _gfx2linux_h
+
+#define SOCKET_NAME "gfx2linux.sock"
+
 typedef struct _event {
     int type;
     int code;
@@ -11,6 +14,9 @@ Event parse_data(char* data);
 int service_main();
 void uinput_init();
 void uinput_event(Event ev);
+
+void send_message(char* path, char* message);
+void send_message_users(char* message);
 
 int websocket_init();
 

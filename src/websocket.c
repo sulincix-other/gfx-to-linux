@@ -32,19 +32,22 @@ static int callback_echo(struct lws *wsi,
             sprintf(pss->buf, "%06d\n", pin);
             pss->auth = false;
             printf("Your random PIN code is: %s\n", pss->buf);
+            char message[2048];
+            sprintf(message,"name:\t%s\nsum:\t%s\nbody:\t%s\n", "Input Request", "PIN Code", pss->buf);
+            send_message_users(message);
             break;
 
         case LWS_CALLBACK_RECEIVE:
             if(!pss->auth){
                 if (strncmp(in, "pin:\t", 5) == 0){
-                    char *msg = malloc(10*sizeof(char));
+                    char *msg;
                     if (strncmp(in+5, pss->buf, 6) == 0){
                         pss->auth = true;
-                        strcpy(msg,"AUTH:OK");
+                        msg = "AUTH:OK";
                     } else {
-                        strcpy(msg,"AUTH:ERR");
+                        msg = "AUTH:ERR";
                     }
-                    lws_write(wsi, msg, strlen(msg), LWS_WRITE_TEXT);
+                    lws_write(wsi, (unsigned char*)strdup(msg), strlen(msg), LWS_WRITE_TEXT);
                 }
                 break;
             }

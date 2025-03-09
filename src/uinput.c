@@ -14,7 +14,6 @@ struct libevdev_uinput *uidev;
 struct input_absinfo absinfo_x;
 struct input_absinfo absinfo_y;
 int err;
-static int fd;
 void uinput_init(){
     // load module
     err = system("modprobe uinput");
@@ -58,7 +57,6 @@ void send_event(int type, int code, int value) {
 	libevdev_uinput_write_event(uidev, EV_SYN, SYN_REPORT, 0);
 }
 
-static int press = 0;
 void uinput_event(Event ev){
     send_event(ev.type, ev.code, ev.value);
     send_event(EV_SYN, SYN_REPORT, 0);
