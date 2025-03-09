@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Gfx2Linux
+Comment=Gfx2Linux Notification Agent
+Categories=System;
+Keywords=keyword;
+Exec=/usr/libexec/gfx2linux-agent
+Icon=
+Terminal=false
+Type=Application

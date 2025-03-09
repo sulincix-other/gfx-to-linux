@@ -1,0 +1,12 @@
+[Unit]
+Description=gfx2linux server
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/libexec/gfx2linux-server
+PIDFile=/run/gfx2linux.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

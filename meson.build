@@ -22,12 +22,12 @@ agent_deps = [
 ]
 
 # create html2c
-foreach data : run_command('ls', 'data/', check:true).stdout().strip().split('\n')
+foreach data : run_command('ls', 'src/client/', check:true).stdout().strip().split('\n')
     h = custom_target(data,
         command: [
             '/bin/bash',
             meson.current_source_dir()/'tools/html2c.sh',
-            meson.current_source_dir() / 'data' / data,
+            meson.current_source_dir() / 'src/client' / data,
             meson.build_root() / data + '.c'
          ],
         output: data + '.c'
@@ -35,6 +35,21 @@ foreach data : run_command('ls', 'data/', check:true).stdout().strip().split('\n
     srcs += [h]
 endforeach
 
-# Create an executable
-executable('main', srcs, dependencies: deps, install: true)
-executable('agent', agent_srcs, dependencies: agent_deps, install: true)
+libexecdir = '/usr/libexec'
+desktopdir = '/etc/xdg/autostart'
+
+# Create executables
+executable('gfx2linux-server', srcs, dependencies: deps, install: true, install_dir: libexecdir)
+executable('gfx2linux-agent', agent_srcs, dependencies: agent_deps, install: true, install_dir: libexecdir)
+
+# Data files
+install_data('data/gfx2linux-agent.desktop', install_dir : desktopdir)
+
+if get_option('service') == 'sysvinit'
+    install_data('data/gfx2linux.sysvinit', install_dir : '/etc/init.d', rename:'gfx2linux')
+elif get_option('service') == 'openrc'
+    install_data('data/gfx2linux.openrc', install_dir : '/etc/init.d', rename:'gfx2linux')
+else
+    install_data('data/gfx2linux.systemd', install_dir : '/etc/systemd/system/', rename: 'gfx2linux.service')
+endif
+

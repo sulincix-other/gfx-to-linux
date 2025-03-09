@@ -1,0 +1,31 @@
+#!/sbin/openrc-run
+
+# OpenRC service script for gfx2linux
+
+command=/usr/libexec/gfx2linux-server
+pidfile=/run/gfx2linux.pid
+description="gfx2linux server"
+
+depend() {
+    need localmount
+}
+
+start() {
+    ebegin "Starting gfx2linux"
+    start-stop-daemon --start --quiet --make-pidfile --background --pidfile ${pidfile} --exec ${command}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping gfx2linux"
+    start-stop-daemon --stop --quiet --pidfile ${pidfile}
+    eend $?
+}
+
+status() {
+    if [ -f ${pidfile} ]; then
+        einfo "gfx2linux is running with PID $(cat ${pidfile})"
+    else
+        einfo "gfx2linux is not running."
+    fi
+}
