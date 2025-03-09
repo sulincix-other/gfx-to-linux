@@ -22,7 +22,7 @@ static int callback_echo(struct lws *wsi,
                           void *in, 
                           size_t len) {
     struct per_session_data *pss = (struct per_session_data *)user;
-    (void)pss;
+    (void)len;
     srand(time(NULL));
 
     switch (reason) {
@@ -75,7 +75,7 @@ static struct lws_protocols protocols[] = {
         sizeof(struct per_session_data),
         BUFFER_LEN,
     },
-    { NULL, NULL, 0, 0 } // terminator
+    { NULL, NULL, 0, 0 }
 };
 
 int websocket_init() {
