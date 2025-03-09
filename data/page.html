@@ -7,17 +7,22 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body id="content">
-     <div class="tabs">
+    <div id="pinForm">
+        <h2 style="color:white" >Enter PIN</h2>
+        <input type="text" id="pinInput" placeholder="Enter your PIN" />
+        <button class="menuKey" onclick="sendPin()" id="sendPinButton">Send PIN</button>
+    </div>
+     <div style="display:none" id="tabs" class="tabs">
         <button id="keyboardKey" class="menuKey" onclick="showPage('keyboard')">Keyboard</button>
-        <button id="tabletKey"class="menuKey" onclick="showPage('tablet')">Tablet</button>
-        <button id="touchpadKey"class="menuKey" onclick="showPage('touchpad')">Touchpad</button>
-        <button id="presentationKey"class="menuKey" onclick="showPage('presentation')">Presentation</button>
+        <button id="tabletKey" class="menuKey" onclick="showPage('tablet')">Tablet</button>
+        <button id="touchpadKey" class="menuKey" onclick="showPage('touchpad')">Touchpad</button>
+        <button id="presentationKey" class="menuKey" onclick="showPage('presentation')">Presentation</button>
         <button class="menuKey" onclick="showFullScreen()">FullScreen</button>
     </div>
-    <div id="tablet" class="tablet"></div>
-    <div id="keyboard" class="keyboard"></div>
-    <div id="touchpad" class="touchpad"></div>
-    <div id="presentation" class="keyboard"></div>
+    <div style="display:none" id="tablet" class="tablet"></div>
+    <div style="display:none" id="keyboard" class="keyboard"></div>
+    <div style="display:none" id="touchpad" class="touchpad"></div>
+    <div style="display:none" id="presentation" class="keyboard"></div>
     <script src="script.js"></script>
 </body>
 </html>

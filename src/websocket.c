@@ -1,15 +1,19 @@
 #include <libwebsockets.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <time.h>
 
 #define BUFFER_LEN 1024
 #define WEBSOCKET_PORT 8080
 
 #include "gfx2linux.h"
 
-struct per_session_data__echo {
+struct per_session_data {
     int fd;
+    bool auth;
     char buf[BUFFER_LEN];
+    
 };
 
 static int callback_echo(struct lws *wsi, 
@@ -17,17 +21,36 @@ static int callback_echo(struct lws *wsi,
                           void *user, 
                           void *in, 
                           size_t len) {
-    struct per_session_data__echo *pss = (struct per_session_data__echo *)user;
+    struct per_session_data *pss = (struct per_session_data *)user;
     (void)pss;
+    srand(time(NULL));
 
     switch (reason) {
         case LWS_CALLBACK_ESTABLISHED:
             printf("Connection established\n");
+            int pin = rand() % 1000000;
+            sprintf(pss->buf, "%06d\n", pin);
+            pss->auth = false;
+            printf("Your random PIN code is: %s\n", pss->buf);
             break;
 
         case LWS_CALLBACK_RECEIVE:
+            if(!pss->auth){
+                if (strncmp(in, "pin:\t", 5) == 0){
+                    char *msg = malloc(10*sizeof(char));
+                    if (strncmp(in+5, pss->buf, 6) == 0){
+                        pss->auth = true;
+                        strcpy(msg,"AUTH:OK");
+                    } else {
+                        strcpy(msg,"AUTH:ERR");
+                    }
+                    lws_write(wsi, msg, strlen(msg), LWS_WRITE_TEXT);
+                }
+                break;
+            }
             printf("Received: %s\n", (char *)in);
             Event ev = parse_data((char*)in);
+            printf("%s\n",pss->buf);
             uinput_event(ev);
             //lws_write(wsi, (unsigned char *)in, len, LWS_WRITE_TEXT);
             break;
@@ -46,7 +69,7 @@ static struct lws_protocols protocols[] = {
     {
         "echo-protocol",
         callback_echo,
-        sizeof(struct per_session_data__echo),
+        sizeof(struct per_session_data),
         BUFFER_LEN,
     },
     { NULL, NULL, 0, 0 } // terminator

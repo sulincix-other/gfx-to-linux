@@ -1,5 +1,6 @@
 const socket = new WebSocket('ws://' + window.location.hostname + ":8080");
 let keyboardLayout = {};
+var auth = false;
 fetch('./keycodes.json')
     .then(response => response.json())
     .then(data => {
@@ -8,9 +9,28 @@ fetch('./keycodes.json')
         createKeyboard('presentation', presentationLayoutLabels);
     });
 
+socket.onmessage = function(event) {
+    console.log('Message from server: ', event.data);
+    if(event.data == "AUTH:OK"){
+        showPage('keyboard');
+        document.getElementById('pinForm').style.display = 'none';
+        document.getElementById('tabs').style.display = 'block';
+        auth=true;
+    }
+};
+
+
 function sendWebSocketMessage(type, code, value) {
+    if(!auth){
+        return;
+    }
     const message = `type:\t${type}\ncode:\t${code}\nvalue:\t${value}\n\0`;
     socket.send(message);
+}
+
+function sendPin(){
+    const pin = document.getElementById("pinInput").value;
+    socket.send(`pin:\t${pin}\n\0`);
 }
 
 function getValueFromLabel(label) {
@@ -194,7 +214,6 @@ function showPage(page){
     document.getElementById(page+"Key").classList.add('menuKeyActive');
     content = document.getElementById(page);
 }
-showPage('keyboard');
 
 function showFullScreen() {
 
