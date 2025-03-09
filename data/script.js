@@ -7,6 +7,11 @@ fetch('./keycodes.json')
         createKeyboard('keyboard', keyboardLayoutLabels);
     });
 
+function sendWebSocketMessage(type, code, value) {
+    const message = `type:\t${type}\ncode:\t${code}\nvalue:\t${value}\n\0`;
+    socket.send(message);
+}
+
 function getValueFromLabel(label) {
     // Iterate through the keyboard layout array
     for (const keyMapping of keyboardLayout.keyboardLayout) {
@@ -57,52 +62,39 @@ touchpad.addEventListener('mousemove', on_touchpad_move);
 // Handle key press events
 function on_key_press(code) {
     console.log(code);
-    var tbody = "type:\tEV_KEY\n";
-    tbody += "code:\t" + code + "\n"; // Use the key code
-    tbody += "value:\t1\n\0"; // Key down
-    socket.send(tbody);
+    sendWebSocketMessage("EV_KEY", code, "1");
 }
 
 // Handle key release events
 function on_key_release(code) {
-    var tbody = "type:\tEV_KEY\n";
-    tbody += "code:\t" + code + "\n"; // Use the key code
-    tbody += "value:\t0\n\0"; // Key up
-    socket.send(tbody);
+    sendWebSocketMessage("EV_KEY", code, "0");
 }
 
 function on_press(e) {
     console.log(e.key);
     e.preventDefault();
-    var tbody = "type:\tEV_KEY\n";
+    var key = "BTN_LEFT";
     if (e.touches) {
-        tbody += "code:\tBTN_LEFT\n";
         button = 1;
     } else {
         button = e.buttons;
-        if (e.buttons == 1) {
-            tbody += "code:\tBTN_LEFT\n";
-        } else if (e.buttons == 2) {
-            tbody += "code:\tBTN_RIGHT\n";
+        if (e.buttons == 2) {
+            key = "BTN_RIGHT";
         }
     }
-    tbody += "value:\t1\n\0";
-    socket.send(tbody)
+    sendWebSocketMessage("EV_KEY", key, "1");
 }
 
 function on_release(e) {
     e.preventDefault();
-    var tbody = "type:\tEV_KEY\n";
-    if (button == 1) {
-        tbody += "code:\tBTN_LEFT\n";
-    } else if (button == 2) {
-        tbody += "code:\tBTN_RIGHT\n";
+    var key = "BTN_LEFT";
+    if (button == 2) {
+        key = "BTN_RIGHT";
     } else if (button == 330) {
-        tbody += "code:\tBTN_TOUCH\n";
+        key = "BTN_TOUCH";
     }
     button = 0;
-    tbody += "value:\t0\n\0";
-    socket.send(tbody)
+    sendWebSocketMessage("EV_KEY", key, "0");
 }
 
 var pos = {
@@ -117,14 +109,8 @@ function on_move(e) {
     var rect = tablet.getBoundingClientRect();
     pos.x = (pos.x * 3920) / rect.width;
     pos.y = (pos.y * 2160) / rect.height;
-    var tbody = "type:\tEV_ABS\n";
-    tbody += "code:\tABS_X\n";
-    tbody += "value:\t" + pos.x + "\n\0";
-    socket.send(tbody);
-    tbody = "type:\tEV_ABS\n";
-    tbody += "code:\tABS_Y\n";
-    tbody += "value:\t" + pos.y + "\n\0";
-    socket.send(tbody);
+    sendWebSocketMessage("EV_ABS", "ABS_X", pos.x);
+    sendWebSocketMessage("EV_ABS", "ABS_Y", pos.y);
 }
 
 function get_position(e){
@@ -159,15 +145,8 @@ function on_touchpad_end(e) {
         return;
     }
     if(!moved){
-        var tbody = "type:\tEV_KEY\n";
-        tbody += "code:\tBTN_LEFT\n";
-        tbody += "value:\t1\n\0";
-        socket.send(tbody);
-
-        tbody = "type:\tEV_KEY\n";
-        tbody += "code:\tBTN_LEFT\n";
-        tbody += "value:\t0\n\0";
-        socket.send(tbody);
+        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "1");
+        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "0");
     }
     pressed = false;
 }
@@ -198,14 +177,8 @@ function on_touchpad_move(e) {
     if (lastPos.y < -1) {lastPos.y = -1};
     if (lastPos.x > 3941) {lastPos.x = 3941};
     if (lastPos.y > 2161) {lastPos.y = 2161};
-    var tbody = "type:\tEV_ABS\n";
-    tbody += "code:\tABS_X\n";
-    tbody += "value:\t" + lastPos.x + "\n\0";
-    socket.send(tbody);
-    tbody = "type:\tEV_ABS\n";
-    tbody += "code:\tABS_Y\n";
-    tbody += "value:\t" + lastPos.y + "\n\0";
-    socket.send(tbody);
+    sendWebSocketMessage("EV_ABS", "ABS_X", lastPos.x);
+    sendWebSocketMessage("EV_ABS", "ABS_Y", lastPos.y);
 
 }
 
