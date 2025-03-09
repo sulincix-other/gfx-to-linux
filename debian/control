@@ -1,0 +1,17 @@
+Source: gfx2linux
+Section: utils
+Priority: optional
+Maintainer: Your Name <you@example.com>
+Build-Depends: meson, ninja-build,
+         libwebsockets-dev,
+         libdbus-1-dev,
+         libevdev-dev
+Standards-Version: 4.3.0
+Homepage: https://example.com
+
+Package: gfx2linux
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Description: Gfx2linux
+ Gfx2Linux remote Controller

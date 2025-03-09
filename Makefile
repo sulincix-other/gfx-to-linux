@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm -rf build || true
+	rm -rf build obj-* || true
 build:
 	meson setup build
 	ninja -C build
