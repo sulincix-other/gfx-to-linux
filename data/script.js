@@ -4,7 +4,7 @@ fetch('./keycodes.json')
     .then(response => response.json())
     .then(data => {
         keyboardLayout = data;
-        createKeyboard();
+        createKeyboard('keyboard', keyboardLayoutLabels);
     });
 
 function getValueFromLabel(label) {
@@ -139,8 +139,6 @@ function get_position(e){
 
 var beginPos = { x: 0, y: 0 };
 var lastPos = { x: 0, y: 0 };
-var lastTapTime = 0;
-var tapTimeout = 300;
 var pressed = false;
 var moved = false;
 function on_touchpad_start(e) {
@@ -211,30 +209,30 @@ function on_touchpad_move(e) {
 
 }
 
-document.getElementById('keyboard').style.display = 'none';
-document.getElementById('touchpad').style.display = 'none';
-let content = document.getElementById('tablet');
-
-function showKeyboard() {
-    document.getElementById('keyboard').style.display = 'block';
+function hideAll(){
+    document.getElementById('keyboard').style.display = 'none';
     document.getElementById('tablet').style.display = 'none';
     document.getElementById('touchpad').style.display = 'none';
-    content = document.getElementById('keyboard');
+}
+function showPage(page){
+    hideAll();
+    document.getElementById(page).style.display = 'block';
+    content = document.getElementById(page);
+}
+
+function showKeyboard(){
+    showPage('keyboard');
 }
 
 function showGfxTablet() {
-    document.getElementById('keyboard').style.display = 'none';
-    document.getElementById('tablet').style.display = 'block';
-    document.getElementById('touchpad').style.display = 'none';
-    content = document.getElementById('tablet');
+    showPage('tablet');
 }
 
 function showTouchpad() {
-    document.getElementById('keyboard').style.display = 'none';
-    document.getElementById('tablet').style.display = 'none';
-    document.getElementById('touchpad').style.display = 'block';
-    content = document.getElementById('touchpad');
+    showPage('touchpad');
 }
+
+showTouchpad();
 
 function showFullScreen() {
 
@@ -269,10 +267,10 @@ const modifierStates = {
 };
 
 // Function to create the keyboard
-function createKeyboard() {
-    const keyboardContainer = document.getElementById('keyboard');
+function createKeyboard(page, labels) {
+    const container = document.getElementById(page);
 
-    keyboardLayoutLabels.forEach(row => {
+    labels.forEach(row => {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'row';
 
@@ -314,7 +312,6 @@ function createKeyboard() {
             rowDiv.appendChild(keyButton);
         });
 
-        keyboardContainer.appendChild(rowDiv);
+        container.appendChild(rowDiv);
     });
 }
-
