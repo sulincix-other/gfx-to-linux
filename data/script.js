@@ -113,14 +113,8 @@ var button = 0;
 // new position from mouse/touch event
 function on_move(e) {
     e.preventDefault();
+    get_position(e);
     var rect = tablet.getBoundingClientRect();
-    if (e.touches) {
-        pos.x = e.touches[0].clientX - rect.left;
-        pos.y = e.touches[0].clientY - rect.top;
-    } else {
-        pos.x = e.clientX - rect.left;
-        pos.y = e.clientY - rect.top;
-    }
     pos.x = (pos.x * 3920) / rect.width;
     pos.y = (pos.y * 2160) / rect.height;
     var tbody = "type:\tEV_ABS\n";
@@ -133,6 +127,16 @@ function on_move(e) {
     socket.send(tbody);
 }
 
+function get_position(e){
+    if (e.touches) {
+        pos.x = e.touches[0].clientX;
+        pos.y = e.touches[0].clientY;
+    } else {
+        pos.x = e.clientX;
+        pos.y = e.clientY;
+    }
+}
+
 var beginPos = { x: 0, y: 0 };
 var lastPos = { x: 0, y: 0 };
 var lastTapTime = 0;
@@ -141,46 +145,21 @@ var pressed = false;
 var moved = false;
 function on_touchpad_start(e) {
     e.preventDefault();
+    if(pressed){
+        return;
+    }
     pressed = true;
     moved = false;
-    var currentTime = new Date().getTime();
-    var rect = tablet.getBoundingClientRect();
-    var tapEvent = false;
-    if (e.touches) {
-        pos.x = e.touches[0].clientX - rect.left;
-        pos.y = e.touches[0].clientY - rect.top;
-    } else {
-        pos.x = e.clientX - rect.left;
-        pos.y = e.clientY - rect.top;
-    }
-    
-    // Check if the time between taps is within the double-tap threshold
-    if (currentTime - lastTapTime <= tapTimeout) {
-        tapEvent = true;
-    }
-
-    // Update the last tap time
-    lastTapTime = currentTime;
-
+    get_position(e);
     // Capture initial touch position
-    beginPos.x = pos.x - rect.left;
-    beginPos.y = pos.y - rect.top;
-    
-    
-    if (tapEvent) {
-        var tbody = "type:\tEV_KEY\n";
-        tbody += "code:\tBTN_RIGHT\n";
-        tbody += "value:\t1\n\0";
-        socket.send(tbody);
-
-        tbody = "type:\tEV_KEY\n";
-        tbody += "code:\tBTN_RIGHT\n";
-        tbody += "value:\t0\n\0";
-        socket.send(tbody);
-    }
+    beginPos.x = pos.x;
+    beginPos.y = pos.y;
 }
 
 function on_touchpad_end(e) {
+    if(!pressed){
+        return;
+    }
     if(!moved){
         var tbody = "type:\tEV_KEY\n";
         tbody += "code:\tBTN_LEFT\n";
@@ -202,16 +181,10 @@ function on_touchpad_move(e) {
     }
     moved = true;
     var rect = tablet.getBoundingClientRect();
-    if (e.touches) {
-        pos.x = e.touches[0].clientX - rect.left;
-        pos.y = e.touches[0].clientY - rect.top;
-    } else {
-        pos.x = e.clientX - rect.left;
-        pos.y = e.clientY - rect.top;
-    }
+    get_position(e);
     var currentPos = {
-        x: pos.x - rect.left,
-        y: pos.y - rect.top
+        x: pos.x,
+        y: pos.y
     };
 
     // Calculate the relative movement
