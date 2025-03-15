@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include<syslog.h>
+
 #include "gfx2linux.h"
 
 void send_message(char* path, char* message) {
@@ -49,6 +51,10 @@ void send_message_users(char* message) {
         return;
     }
 
+    openlog("gfx2linux", LOG_PID, LOG_USER);
+    syslog(LOG_INFO, "%s\n", message);
+    closelog();
+
     while ((entry = readdir(dp)) != NULL) {
         // Skip the current and parent directory entries
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
@@ -58,7 +64,6 @@ void send_message_users(char* message) {
         // Construct the full path
         char full_path[1024];
         snprintf(full_path, sizeof(full_path), "%s/%s/%s", "/run/user", entry->d_name,SOCKET_NAME);
-        puts(full_path);
 
         struct stat statbuf;
         if (stat(full_path, &statbuf) == 0) {
