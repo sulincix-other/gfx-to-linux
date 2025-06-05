@@ -11,6 +11,7 @@ if(isApple()){
     document.body.innerHTML += "<p style='color:white;'>Get a real device: use Android or GNU/Linux!</p>";
     throw new Error("Apple Detected!");
 }
+document.body.oncontextmenu = ()=>{return false;};
 
 const socket = new WebSocket('ws://' + window.location.hostname + ":8080");
 let keyboardLayout = {};
@@ -199,12 +200,12 @@ function on_touchpad_move(e) {
     // Calculate the relative movement
     var deltaX = currentPos.x - beginPos.x;
     var deltaY = currentPos.y - beginPos.y;
-    
+
     beginPos = currentPos;
 
     lastPos.x += deltaX * 5;
     lastPos.y += deltaY * 5;
-    
+
     if (lastPos.x < -1) {lastPos.x = -1};
     if (lastPos.y < -1) {lastPos.y = -1};
     if (lastPos.x > 3941) {lastPos.x = 3941};
