@@ -28,7 +28,7 @@ void *handle_client(void *client_socket) {
     // Parse the GET request
     char *method = strtok(buffer, " ");
     char *path = strtok(NULL, " ");
-    
+
     // Check if the method is GET
     if (method == NULL || path == NULL || strcmp(method, "GET") != 0) {
         // Respond with 400 Bad Request
@@ -52,7 +52,7 @@ void *handle_client(void *client_socket) {
             "Content-Type: text/css\n"
             "Connection: close\n\n"
         );
-        http_response = realloc(http_response, 
+        http_response = realloc(http_response,
             (strlen(http_response) + strlen(styles) + 1)*sizeof(char)
         );
         strcat(http_response, styles);
@@ -63,7 +63,7 @@ void *handle_client(void *client_socket) {
             "Content-Type: text/script\n"
             "Connection: close\n\n"
         );
-        http_response = realloc(http_response, 
+        http_response = realloc(http_response,
             (strlen(http_response) + strlen(script) + 1)*sizeof(char)
         );
         strcat(http_response, script);
@@ -74,7 +74,7 @@ void *handle_client(void *client_socket) {
             "Content-Type: text/json\n"
             "Connection: close\n\n"
         );
-        http_response = realloc(http_response, 
+        http_response = realloc(http_response,
             (strlen(http_response) + strlen(keycodes) + 1)*sizeof(char)
         );
         strcat(http_response, keycodes);
@@ -85,7 +85,7 @@ void *handle_client(void *client_socket) {
             "Content-Type: text/html\n"
             "Connection: close\n\n"
         );
-        http_response = realloc(http_response, 
+        http_response = realloc(http_response,
             (strlen(http_response) + strlen(page) + 1)*sizeof(char)
         );
         strcat(http_response, page);

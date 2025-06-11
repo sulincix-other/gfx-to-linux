@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <dirent.h>
 #include <linux/uinput.h>
 #include <string.h>
 #include <unistd.h>
@@ -16,8 +17,13 @@ struct input_absinfo absinfo_y;
 int err;
 void uinput_init(){
     // load module
-    err = system("modprobe uinput");
-    if (err != 0) exit(err);
+    DIR* d = opendir("/sys/module/uinput");
+    if(d == NULL){
+        err = system("modprobe uinput");
+        if (err != 0) { perror("uinput"); exit(err); }
+    } else {
+        closedir(d);
+    }
 
     dev = libevdev_new();
     libevdev_set_name(dev, "Amogus device");
@@ -32,6 +38,7 @@ void uinput_init(){
     libevdev_enable_event_type(dev, EV_ABS);
     libevdev_enable_event_code(dev, EV_ABS, ABS_X, &absinfo_x);
     libevdev_enable_event_code(dev, EV_ABS, ABS_Y, &absinfo_y);
+    libevdev_enable_event_code(dev, EV_ABS, ABS_PRESSURE, &absinfo_y);
 
     // EV_KEY (mouse)
     libevdev_enable_event_type(dev, EV_KEY);
@@ -46,7 +53,7 @@ void uinput_init(){
 
 
     err = libevdev_uinput_create_from_device(dev, LIBEVDEV_UINPUT_OPEN_MANAGED, &uidev);
-    if (err != 0) exit(err);
+    if (err != 0) { perror("uinput"); exit(err); }
 
     sleep(1);
 }
