@@ -13,13 +13,39 @@ struct per_session_data {
     int fd;
     bool auth;
     char buf[BUFFER_LEN];
-    
+    char uuid[36];
 };
 
-static int callback_echo(struct lws *wsi, 
-                          enum lws_callback_reasons reason, 
-                          void *user, 
-                          void *in, 
+bool is_valid_uuid(char* uuid) {
+    if(strlen(uuid) != 36){
+        return false;
+    }
+    FILE* file = fopen("/etc/gfx2linux.uuids", "r");
+    if(file == NULL){
+        return false;
+    }
+    char line[37]; // +1 for \n
+    while (fgets(line, sizeof(line), file)) {
+        if(strncmp(line, uuid, 36) == 0){
+            return true;
+        }
+    }
+    fclose(file);
+    return false;
+}
+
+void add_uuid(char* uuid) {
+    if(strlen(uuid) != 36){
+        return;
+    }
+    FILE* file = fopen("/etc/gfx2linux.uuids", "a");
+    fprintf(file, "%s\n", uuid);
+    fclose(file);
+}
+static int callback_echo(struct lws *wsi,
+                          enum lws_callback_reasons reason,
+                          void *user,
+                          void *in,
                           size_t len) {
     struct per_session_data *pss = (struct per_session_data *)user;
     (void)len;
@@ -38,11 +64,20 @@ static int callback_echo(struct lws *wsi,
             break;
 
         case LWS_CALLBACK_RECEIVE:
+            puts(in);
             if(!pss->auth){
-                if (strncmp(in, "pin:\t", 5) == 0){
+                if (strncmp(in, "uuid:\t", 6) == 0){
+                    strncpy(pss->uuid, in+6, 36);
+                    if(is_valid_uuid(pss->uuid)){
+                        pss->auth = true;
+                        char* msg = "AUTH:OK";
+                        lws_write(wsi, (unsigned char*)strdup(msg), strlen(msg), LWS_WRITE_TEXT);
+                    }
+                } else if (strncmp(in, "pin:\t", 5) == 0){
                     char *msg;
                     if (strncmp(in+5, pss->buf, 6) == 0){
                         pss->auth = true;
+                        add_uuid(pss->uuid);
                         msg = "AUTH:OK";
                     } else {
                         msg = "AUTH:ERR";

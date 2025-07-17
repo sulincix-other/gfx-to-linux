@@ -50,6 +50,24 @@ function sendPin(){
     socket.send(`pin:\t${pin}\n\0`);
 }
 
+function genUuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    .replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+// local storage uuid
+if (!("uuid" in localStorage)){
+    localStorage["uuid"] = genUuid();
+}
+const uuid = localStorage["uuid"];
+socket.onopen = function (event) {
+    socket.send(`uuid:\t${uuid}\n\0`);
+}
+
 function getValueFromLabel(label) {
     // Iterate through the keyboard layout array
     for (const keyMapping of keyboardLayout.keyboardLayout) {
