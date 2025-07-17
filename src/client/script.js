@@ -207,6 +207,9 @@ var pos = { x: 0, y: 0 };
 var pressed = false;
 var moved = false;
 var touch_count = 0;
+var last_touch_count = 0;
+var lock_search = false; // double tap search lock
+var in_lock = false; //double tab lock status
 function on_touchpad_start(e) {
     e.preventDefault();
     if(e.touches){
@@ -224,18 +227,37 @@ function on_touchpad_start(e) {
     // Capture initial touch position
     beginPos.x = pos.x;
     beginPos.y = pos.y;
+    if(lock_search) {
+        in_lock = true;
+        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "1");
+    }
 }
 
 function on_touchpad_end(e) {
     if(!pressed){
         return;
     }
+    if(in_lock){
+        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "0");
+        lock_search = false;
+        in_lock = false;
+        return;
+    }
     if(!moved){
-        if (touch_count == 1) {
-            on_key_send("BTN_LEFT");
-        } else if (touch_count == 2) {
-            on_key_send("BTN_RIGHT");
-        }
+        lock_search = true;
+        setTimeout(()=>{
+            lock_search = false;
+            if(!in_lock){
+                if (last_touch_count == 1) {
+                    on_key_send("BTN_LEFT");
+                } else if (last_touch_count == 2) {
+                    on_key_send("BTN_RIGHT");
+                }
+                last_touch_count = 0;
+            }
+        }, 200);
+        last_touch_count = touch_count;
+        lock_search = true;
     }
     touch_count = 0;
     pressed = false;
