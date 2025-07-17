@@ -228,7 +228,6 @@ function on_touchpad_move(e) {
     if(!pressed){
         return;
     }
-    moved = true;
     var rect = tablet.getBoundingClientRect();
     get_position(e);
     var currentPos = {
@@ -239,6 +238,11 @@ function on_touchpad_move(e) {
     // Calculate the relative movement
     var deltaX = currentPos.x - beginPos.x;
     var deltaY = currentPos.y - beginPos.y;
+
+    if(deltaX == 0 && deltaY == 0) {
+        return;
+    }
+    moved = true;
 
     beginPos = currentPos;
 
