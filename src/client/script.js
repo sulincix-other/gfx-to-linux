@@ -228,9 +228,6 @@ function on_touchpad_move(e) {
     if(!pressed){
         return;
     }
-    if (touch_count != 1) {
-        return;
-    }
     moved = true;
     var rect = tablet.getBoundingClientRect();
     get_position(e);
@@ -252,8 +249,14 @@ function on_touchpad_move(e) {
     if (lastPos.y < -1) {lastPos.y = -1};
     if (lastPos.x > 3941) {lastPos.x = 3941};
     if (lastPos.y > 2161) {lastPos.y = 2161};
-    sendWebSocketMessage("EV_ABS", "ABS_X", lastPos.x);
-    sendWebSocketMessage("EV_ABS", "ABS_Y", lastPos.y);
+
+    if (touch_count == 1) {
+        sendWebSocketMessage("EV_ABS", "ABS_X", lastPos.x);
+        sendWebSocketMessage("EV_ABS", "ABS_Y", lastPos.y);
+    } else {
+        sendWebSocketMessage("EV_REL", "REL_WHEEL_HI_RES", deltaY*-5);
+        sendWebSocketMessage("EV_REL", "REL_HWHEEL_HI_RES", deltaX*5);
+    }
 
 }
 
