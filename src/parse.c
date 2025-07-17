@@ -21,6 +21,8 @@ Event parse_data(char* data){
                 ev->type = EV_KEY;
             }else if(startswith(val, "EV_ABS")){
                 ev->type = EV_ABS;
+            }else if(startswith(val, "EV_REL")){
+                ev->type = EV_REL;
             }
         }if(startswith(token, "code:")){
             val = strdup(token+6);
@@ -34,6 +36,10 @@ Event parse_data(char* data){
                 ev->code = BTN_LEFT;
             } else if(startswith(val, "BTN_RIGHT")){
                 ev->code = BTN_RIGHT;
+            } else if(startswith(val, "REL_WHEEL_HI_RES")){
+                ev->code = REL_WHEEL_HI_RES;
+            } else if(startswith(val, "REL_WHEEL")){
+                ev->code = REL_WHEEL;
             } else {
                 ev->code = atoi(val);
             }

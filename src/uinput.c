@@ -40,6 +40,13 @@ void uinput_init(){
     libevdev_enable_event_code(dev, EV_ABS, ABS_Y, &absinfo_y);
     libevdev_enable_event_code(dev, EV_ABS, ABS_PRESSURE, &absinfo_y);
 
+    // EV_REL
+    libevdev_enable_event_type(dev, EV_REL);
+    libevdev_enable_event_code(dev, EV_REL, REL_WHEEL, NULL);
+    libevdev_enable_event_code(dev, EV_REL, REL_HWHEEL, NULL);
+    libevdev_enable_event_code(dev, EV_REL, REL_WHEEL_HI_RES, NULL);
+    libevdev_enable_event_code(dev, EV_REL, REL_HWHEEL_HI_RES, NULL);
+
     // EV_KEY (mouse)
     libevdev_enable_event_type(dev, EV_KEY);
     libevdev_enable_event_code(dev, EV_KEY, BTN_RIGHT, NULL);

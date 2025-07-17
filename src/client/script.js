@@ -82,6 +82,7 @@ tablet.addEventListener('mousemove', on_move);
 tablet.addEventListener('mousedown', on_press);
 tablet.addEventListener('mouseup', on_release);
 tablet.addEventListener('mouseenter', on_move);
+tablet.addEventListener("wheel", on_wheel);
 
 // Touch event listeners
 document.addEventListener('keydown', (e) => on_key_press(getValueFromCode(e.code)));
@@ -101,6 +102,15 @@ touchpad_area.addEventListener('mousemove', on_touchpad_move);
 addEventListener("resize", (event) => {
 
 })
+
+function on_wheel(event) {
+    if (event.deltaY != 0){
+        sendWebSocketMessage("EV_REL", "REL_WHEEL_HI_RES", event.deltaY*-1);
+    }
+    if (event.deltaX != 0){
+        sendWebSocketMessage("EV_REL", "REL_HWHEEL_HI_RES", event.deltaX);
+    }
+}
 
 // Handle key press events
 function on_key_press(code) {
