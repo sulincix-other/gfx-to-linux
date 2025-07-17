@@ -34,6 +34,8 @@ socket.onmessage = function(event) {
     }
 };
 
+//document.getElementById('pinForm').style.display = 'none';
+//document.getElementById('tabs').style.display = 'block';
 
 function sendWebSocketMessage(type, code, value) {
     if(!auth){
@@ -88,12 +90,17 @@ tablet.addEventListener('touchstart', on_press);
 tablet.addEventListener('touchmove', on_move);
 tablet.addEventListener('touchend', on_release);
 
-touchpad.addEventListener('touchstart', on_touchpad_start);
-touchpad.addEventListener('touchend', on_touchpad_end);
-touchpad.addEventListener('touchmove', on_touchpad_move);
-touchpad.addEventListener('mousedown', on_touchpad_start);
-touchpad.addEventListener('mouseup', on_touchpad_end);
-touchpad.addEventListener('mousemove', on_touchpad_move);
+const touchpad_area = document.getElementById('touchpad_area');
+touchpad_area.addEventListener('touchstart', on_touchpad_start);
+touchpad_area.addEventListener('touchend', on_touchpad_end);
+touchpad_area.addEventListener('touchmove', on_touchpad_move);
+touchpad_area.addEventListener('mousedown', on_touchpad_start);
+touchpad_area.addEventListener('mouseup', on_touchpad_end);
+touchpad_area.addEventListener('mousemove', on_touchpad_move);
+
+addEventListener("resize", (event) => {
+
+})
 
 // Handle key press events
 function on_key_press(code) {
@@ -103,7 +110,18 @@ function on_key_press(code) {
 
 // Handle key release events
 function on_key_release(code) {
+    console.log(code);
     sendWebSocketMessage("EV_KEY", code, "0");
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function on_key_send(code) {
+    on_key_press(code);
+    sleep(100);
+    on_key_release(code);
 }
 
 function on_press(e) {
@@ -178,8 +196,7 @@ function on_touchpad_end(e) {
         return;
     }
     if(!moved){
-        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "1");
-        sendWebSocketMessage("EV_KEY", "BTN_LEFT", "0");
+        on_key_send("BTN_LEFT");
     }
     pressed = false;
 }
@@ -312,7 +329,7 @@ function createKeyboard(page, labels) {
 
             rowDiv.appendChild(keyButton);
             rowDiv.style.height = (100 / labels.length) + "%";
-            
+
         });
 
         container.appendChild(rowDiv);

@@ -21,7 +21,15 @@
     </div>
     <div style="display:none" id="tablet" class="tablet"></div>
     <div style="display:none" id="keyboard" class="keyboard"></div>
-    <div style="display:none" id="touchpad" class="touchpad"></div>
+    <div style="display:none; padding: 8px;" id="touchpad" class="touchpad">
+        <div style="height: 90%; width: 100%;" id="touchpad_area" ></div>
+        <div style="width: 100%; margin: 0px; text-align: center; height: 10%;">
+        <button class="menuKey" style="margin: 0px; width: 48%; height:100%" 
+            onclick="on_key_send('BTN_LEFT'); ">Left Click</button>
+        <button class="menuKey" style="margin: 0px; width: 48%; height:100%"
+            onclick="on_key_send('BTN_RIGHT');">Right Click</button>
+        </div>
+    </div>
     <div style="display:none" id="presentation" class="keyboard"></div>
     <script src="script.js"></script>
 </body>
