@@ -119,8 +119,11 @@ static struct lws_protocols protocols[] = {
         callback_echo,
         sizeof(struct per_session_data),
         BUFFER_LEN,
+        0,
+        0,
+        0
     },
-    { NULL, NULL, 0, 0 }
+    { NULL, NULL, 0, 0, 0, 0, 0}
 };
 
 int websocket_init() {

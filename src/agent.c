@@ -163,7 +163,7 @@ void *client_handler(void *arg) {
     close(client_fd);
     return NULL;
 }
-int main(int argc, char ** argv) {
+int main() {
 
     int server_fd = socket_init();
     struct sockaddr_un client_addr;
