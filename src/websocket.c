@@ -96,7 +96,17 @@ static int callback_echo(struct lws *wsi,
         case LWS_CALLBACK_CLOSED:
             printf("Connection closed\n");
             break;
+        case LWS_CALLBACK_HTTP:
+             char *requested_uri = (char *) in;
+             while(requested_uri[0] == '/'){
+                 requested_uri++;
+             }
+             printf("requested URI: %s\n", requested_uri);
+             char* response =  get_response(requested_uri);
 
+             lws_write(wsi, (unsigned char *)response, strlen(response), LWS_WRITE_HTTP);
+             return -1;
+             break;
         default:
             break;
     }

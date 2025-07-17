@@ -11,7 +11,6 @@ typedef struct _event {
 
 Event parse_data(char* data);
 
-int service_main();
 void uinput_init();
 void uinput_event(Event ev);
 
@@ -19,7 +18,7 @@ void send_message(char* path, char* message);
 void send_message_users(char* message);
 
 int websocket_init();
-
+char* get_response(const char* path);
 #define startswith(A, B) strncmp(A, B, strlen(B)) == 0
 
 #endif
