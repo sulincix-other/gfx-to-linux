@@ -178,8 +178,15 @@ var lastPos = { x: 0, y: 0 };
 var pos = { x: 0, y: 0 };
 var pressed = false;
 var moved = false;
+var touch_count = 0;
 function on_touchpad_start(e) {
     e.preventDefault();
+    if(e.touches){
+        touch_count =  e.touches.length;
+    } else {
+        touch_count = 1;
+    }
+    console.log(e.touches);
     if(pressed){
         return;
     }
@@ -196,14 +203,22 @@ function on_touchpad_end(e) {
         return;
     }
     if(!moved){
-        on_key_send("BTN_LEFT");
+        if (touch_count == 1) {
+            on_key_send("BTN_LEFT");
+        } else if (touch_count == 2) {
+            on_key_send("BTN_RIGHT");
+        }
     }
+    touch_count = 0;
     pressed = false;
 }
 
 function on_touchpad_move(e) {
     e.preventDefault();
     if(!pressed){
+        return;
+    }
+    if (touch_count != 1) {
         return;
     }
     moved = true;
