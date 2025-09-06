@@ -14,6 +14,7 @@ extern char* page;
 extern char* styles;
 extern char* script;
 extern char* keycodes;
+extern char* keyboard;
 
 
 char* get_response(const char* path){
@@ -42,7 +43,7 @@ char* get_response(const char* path){
         );
         strcat(http_response, script);
     } else if (strcmp(path, "keycodes.json") == 0) {
-        // Respond with js content
+        // Respond with json content
         http_response = strdup(
             "HTTP/1.1 200 OK\n"
             "Content-Type: text/json\n"
@@ -52,6 +53,17 @@ char* get_response(const char* path){
             (strlen(http_response) + strlen(keycodes) + 1)*sizeof(char)
         );
         strcat(http_response, keycodes);
+    } else if (strcmp(path, "keyboard.json") == 0) {
+        // Respond with json content
+        http_response = strdup(
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/json\n"
+            "Connection: close\n\n"
+        );
+        http_response = realloc(http_response,
+            (strlen(http_response) + strlen(keyboard) + 1)*sizeof(char)
+        );
+        strcat(http_response, keyboard);
     } else {
         // Respond with html content
         http_response = strdup(

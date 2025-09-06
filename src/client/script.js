@@ -13,6 +13,19 @@ if(isApple()){
 }
 document.body.oncontextmenu = ()=>{return false;};
 
+let keyTranslate = [];
+fetch('./keyboard.json')
+    .then(response => response.json())
+    .then(data => {
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const lang = browserLanguage.split("-")[0];
+        //const lang = "tr";
+        if (lang in data) {
+            keyTranslate = data[lang];
+        }
+    });
+
+
 const socket = new WebSocket('ws://' + window.location.hostname + ":8080");
 let keyboardLayout = {};
 var auth = false;
@@ -334,11 +347,12 @@ function showFullScreen() {
 // Define the keyboard layout
 const keyboardLayoutLabels = [
     ['Esc', '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace', 'Del'],
-    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', '\'', 'Home'],
-    ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter', 'PgUp'],
+    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', 'Home'],
+    ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', 'Enter', 'PgUp'],
     ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'End', 'Up', 'PgDn'],
     ['Ctrl', 'Super',  'Alt', 'Space', 'Altgr', 'Left', 'Down', 'Right']
 ];
+
 
 const presentationLayoutLabels = [
     ['VolDn', 'Mute', 'VolUp', 'PgUp'],
@@ -368,6 +382,9 @@ function createKeyboard(page, labels) {
             const keyButton = document.createElement('button');
             keyButton.className = 'key';
             keyButton.textContent = key;
+            if (key in keyTranslate){
+                keyButton.textContent = keyTranslate[key];
+            }
             keyButton.classList.add(key);
             if (key.length == 1){
                 keyButton.classList.add('letter');

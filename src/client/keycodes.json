@@ -46,6 +46,7 @@
         {"key": ",", "code": "Comma", "value": 51},
         {"key": ".", "code": "Period", "value": 52},
         {"key": "/", "code": "Slash", "value": 53},
+        {"key": "\\", "code": "Backslash", "value": 43},
         {"key": " ", "code": "Space", "value": 57},
         {"key": "Enter", "code": "Enter", "value": 28},
         {"key": "Backspace", "code": "Backspace", "value": 14},
