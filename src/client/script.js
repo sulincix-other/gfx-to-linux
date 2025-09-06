@@ -12,6 +12,7 @@ if(isApple()){
     throw new Error("Apple Detected!");
 }
 document.body.oncontextmenu = ()=>{return false;};
+document.body.style.margin = "0px";
 
 let keyTranslate = [];
 fetch('./keyboard.json')
@@ -47,8 +48,8 @@ socket.onmessage = function(event) {
     }
 };
 
-//document.getElementById('pinForm').style.display = 'none';
-//document.getElementById('tabs').style.display = 'block';
+document.getElementById('pinForm').style.display = 'none';
+document.getElementById('tabs').style.display = 'block';
 
 function sendWebSocketMessage(type, code, value) {
     if(!auth){

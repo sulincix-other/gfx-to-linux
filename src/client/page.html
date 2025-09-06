@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Style Virtual Keyboard</title>
+    <title>Gfx2Linux</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body id="content">
@@ -12,23 +12,24 @@
         <input type="text" id="pinInput" placeholder="Enter your PIN" />
         <button class="menuKey" onclick="sendPin()" id="sendPinButton">Send PIN</button>
     </div>
-     <div style="display:none" id="tabs" class="tabs">
+
+    <div style="display:none" id="tablet" class="tablet"></div>
+    <div style="display:none" id="keyboard" class="keyboard"></div>
+    <div style="display:none; " id="touchpad" class="touchpad">
+        <div style="position: fixed;  height: 100%; width: 100%;" id="touchpad_area" ></div>
+        <div style="position: fixed;  bottom: 3%; width: 100%; margin: 0px; text-align: center; height: 10%;">
+        <button class="menuKey" style="margin: 0px; width: 40%; height:100%"
+            onclick="on_key_send('BTN_LEFT'); ">Left Click</button>
+        <button class="menuKey" style="margin: 0px; width: 40%; height:100%"
+            onclick="on_key_send('BTN_RIGHT');">Right Click</button>
+        </div>
+    </div>
+     <div style="display:none; position: fixed; top: 0px;" id="tabs" class="tabs">
         <button id="keyboardKey" class="menuKey" onclick="showPage('keyboard')">Keyboard</button>
         <button id="tabletKey" class="menuKey" onclick="showPage('tablet')">Tablet</button>
         <button id="touchpadKey" class="menuKey" onclick="showPage('touchpad')">Touchpad</button>
         <button id="presentationKey" class="menuKey" onclick="showPage('presentation')">Presentation</button>
         <button class="menuKey" onclick="showFullScreen()">FullScreen</button>
-    </div>
-    <div style="display:none" id="tablet" class="tablet"></div>
-    <div style="display:none" id="keyboard" class="keyboard"></div>
-    <div style="display:none; padding: 8px;" id="touchpad" class="touchpad">
-        <div style="height: 90%; width: 100%;" id="touchpad_area" ></div>
-        <div style="width: 100%; margin: 0px; text-align: center; height: 10%;">
-        <button class="menuKey" style="margin: 0px; width: 48%; height:100%" 
-            onclick="on_key_send('BTN_LEFT'); ">Left Click</button>
-        <button class="menuKey" style="margin: 0px; width: 48%; height:100%"
-            onclick="on_key_send('BTN_RIGHT');">Right Click</button>
-        </div>
     </div>
     <div style="display:none" id="presentation" class="keyboard"></div>
     <script src="script.js"></script>
