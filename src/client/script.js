@@ -176,6 +176,8 @@ function on_press(e) {
         button = e.buttons;
         if (e.buttons == 2) {
             key = "BTN_RIGHT";
+        } else if (e.buttons == 330) {
+            key = "BTN_TOUCH";
         }
     }
     sendWebSocketMessage("EV_KEY", key, "1");
@@ -266,6 +268,8 @@ function on_touchpad_end(e) {
                     on_key_send("BTN_LEFT");
                 } else if (last_touch_count == 2) {
                     on_key_send("BTN_RIGHT");
+                } else if (last_touch_count == 3) {
+                    on_key_send("BTN_MIDDLE");
                 }
                 last_touch_count = 0;
             }

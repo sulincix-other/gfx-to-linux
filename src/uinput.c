@@ -51,6 +51,7 @@ void uinput_init(){
     libevdev_enable_event_type(dev, EV_KEY);
     libevdev_enable_event_code(dev, EV_KEY, BTN_RIGHT, NULL);
     libevdev_enable_event_code(dev, EV_KEY, BTN_TOUCH, NULL);
+    libevdev_enable_event_code(dev, EV_KEY, BTN_MIDDLE, NULL);
     libevdev_enable_event_code(dev, EV_KEY, BTN_LEFT, NULL);
 
     // EV_KEY (keyboard)

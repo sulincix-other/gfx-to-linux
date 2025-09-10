@@ -30,10 +30,14 @@ Event parse_data(char* data){
                 ev->code = ABS_X;
             } else if(startswith(val, "ABS_Y")){
                 ev->code = ABS_Y;
+            } else if(startswith(val, "ABS_PRESSURE")){
+                ev->code = ABS_PRESSURE;
             } else if(startswith(val, "BTN_TOUCH")){
                 ev->code = BTN_TOUCH;
             } else if(startswith(val, "BTN_LEFT")){
                 ev->code = BTN_LEFT;
+            } else if(startswith(val, "BTN_MIDDLE")){
+                ev->code = BTN_MIDDLE;
             } else if(startswith(val, "BTN_RIGHT")){
                 ev->code = BTN_RIGHT;
             } else if(startswith(val, "REL_WHEEL_HI_RES")){
