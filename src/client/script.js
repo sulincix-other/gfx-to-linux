@@ -48,8 +48,8 @@ socket.onmessage = function(event) {
     }
 };
 
-document.getElementById('pinForm').style.display = 'none';
-document.getElementById('tabs').style.display = 'block';
+//document.getElementById('pinForm').style.display = 'none';
+//document.getElementById('tabs').style.display = 'block';
 
 function sendWebSocketMessage(type, code, value) {
     if(!auth){
