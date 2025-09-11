@@ -131,9 +131,6 @@ touchpad_area.addEventListener('mousedown', on_touchpad_start);
 touchpad_area.addEventListener('mouseup', on_touchpad_end);
 touchpad_area.addEventListener('mousemove', on_touchpad_move);
 
-addEventListener("resize", (event) => {
-
-})
 
 function on_wheel(event) {
     if (event.deltaY != 0){
@@ -337,6 +334,8 @@ function showPage(page){
     content = document.getElementById(page);
 }
 
+
+
 function showFullScreen() {
 
     if (content.requestFullscreen) {
@@ -351,7 +350,8 @@ function showFullScreen() {
 
 // Define the keyboard layout
 const keyboardLayoutLabels = [
-    ['Esc', '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace', 'Del'],
+    ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'PrtSc', 'Del'],
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
     ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', 'Home'],
     ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', 'Enter', 'PgUp'],
     ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'End', 'Up', 'PgDn'],
