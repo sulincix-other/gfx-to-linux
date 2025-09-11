@@ -13,7 +13,7 @@
 
 #define BUFFER_SIZE 1024
 
-void send_notification(const char *app_name, const char *summary, const char *body) {
+static void send_notification(const char *app_name, const char *summary, const char *body) {
     DBusConnection *connection;
     DBusError error;
     dbus_error_init( & error);
@@ -82,9 +82,9 @@ void send_notification(const char *app_name, const char *summary, const char *bo
     dbus_connection_unref(connection);
 }
 
-char SOCKET_PATH[1024];
+static char SOCKET_PATH[1024];
 // Function to initialize the server socket
-int socket_init() {
+static int socket_init() {
     int server_fd;
     struct sockaddr_un server_addr;
     sprintf(SOCKET_PATH, "/run/user/%d/%s", getuid(), SOCKET_NAME);
@@ -120,11 +120,11 @@ int socket_init() {
     return server_fd;
 }
 
-char app_name[BUFFER_SIZE];
-char summary[BUFFER_SIZE];
-char body[BUFFER_SIZE];
+static char app_name[BUFFER_SIZE];
+static char summary[BUFFER_SIZE];
+static char body[BUFFER_SIZE];
 // Function to handle communication with a client
-void *client_handler(void *arg) {
+static void *client_handler(void *arg) {
     int client_fd = *(int *) arg;
     char buffer[BUFFER_SIZE];
 

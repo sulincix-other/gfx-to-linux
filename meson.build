@@ -28,7 +28,7 @@ foreach data : run_command('ls', 'src/client/', check:true).stdout().strip().spl
             '/bin/bash',
             meson.current_source_dir()/'tools/html2c.sh',
             meson.current_source_dir() / 'src/client' / data,
-            meson.build_root() / data + '.c'
+            meson.project_build_root() / data + '.c'
          ],
         output: data + '.c'
     )
@@ -37,6 +37,8 @@ endforeach
 
 libexecdir = '/usr/libexec'
 desktopdir = '/etc/xdg/autostart'
+
+add_project_arguments('-fvisibility=hidden', language: 'c')
 
 # Create executables
 executable('gfx2linux-server', srcs, dependencies: deps, install: true, install_dir: libexecdir)
