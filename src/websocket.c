@@ -1,6 +1,7 @@
 #include <libwebsockets.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -16,32 +17,35 @@ struct per_session_data {
     char uuid[36];
 };
 
+static char** uuids = NULL;
+static size_t uuid_cur = 0;
+static size_t uuid_max = 0;
+
 bool is_valid_uuid(char* uuid) {
     if(strlen(uuid) != 36){
         return false;
     }
-    FILE* file = fopen("/etc/gfx2linux.uuids", "r");
-    if(file == NULL){
-        return false;
-    }
-    char line[37]; // +1 for \n
-    while (fgets(line, sizeof(line), file)) {
-        if(strncmp(line, uuid, 36) == 0){
+    for(size_t i=0; i<uuid_cur; i++){
+        if(strcmp(uuid, uuids[i]) == 0){
             return true;
         }
     }
-    fclose(file);
     return false;
 }
 
 void add_uuid(char* uuid) {
-    if(strlen(uuid) != 36){
-        return;
+    if(uuid_max == 0){
+        uuid_max += 32;
+        uuids = malloc(sizeof(char*)*uuid_max);
     }
-    FILE* file = fopen("/etc/gfx2linux.uuids", "a");
-    fprintf(file, "%s\n", uuid);
-    fclose(file);
+    if (uuid_cur >= uuid_max){
+        uuid_max += 32;
+        uuids = realloc(uuids, sizeof(char*)*uuid_max);
+    }
+    uuids[uuid_cur] = strdup(uuid);
+    uuid_cur++;
 }
+
 static int callback_echo(struct lws *wsi,
                           enum lws_callback_reasons reason,
                           void *user,
